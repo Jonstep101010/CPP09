@@ -2,10 +2,13 @@
 
 int main(int argc, char** argv) {
 	if (argc == 2) {
+		// try opening file
+		(void)argv[1];
 		// handle file open error:
 		// std::cerr << "Error: could not open file.";
 
 		// validate file that contains timestamps to evaluate
+		return 0;
 	}
 	std::cerr << "usage:\n./btc <db_filename>\n";
 	return 1;
