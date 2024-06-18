@@ -38,7 +38,7 @@ public:
 	};
 	class InvalidDateDays : public InvalidDateException {
 	public:
-		const char* what() const throw() { return "Day is only valid as Month member"; }
+		const char* what() const throw() { return "Day is invalid in this context."; }
 	};
 	class InvalidDateFormat : public InvalidDateException {
 	public:
