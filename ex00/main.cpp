@@ -1,13 +1,18 @@
 #include "BitcoinExchange.hpp"
+#include <fstream>
+#include <iostream>
 
 int main(int argc, char** argv) {
 	if (argc == 2) {
 		// try opening file
-		(void)argv[1];
-		// handle file open error:
-		// std::cerr << "Error: could not open file.";
-
+		std::ifstream file(argv[1]);
+		if (!file.is_open()) {
+			// handle file open error:
+			std::cerr << "Error: could not open file.";
+			return 1;
+		}
 		// validate file that contains timestamps to evaluate
+		BitcoinExchange myExchange(file);
 		return 0;
 	}
 	std::cerr << "usage:\n./btc <db_filename>\n";
