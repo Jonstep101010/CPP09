@@ -70,11 +70,8 @@ static bool get_day_idx(std::string day) {
 }
 
 static bool check_date(std::string linedate) {
-	std::cout << "check_date: " << linedate << std::endl;
 	const std::string year = linedate.substr(0, 4);
 	const std::string day  = linedate.substr(linedate.length() - 2, 2);
-	std::cout << "year: " << year << std::endl;
-	// std::cout << "day: " << day << std::endl;
 	if (linedate.find_first_not_of(DIGITS) != std::string::npos || year.length() != 4) {
 		throw BitcoinExchange::InvalidDateFormat();
 	}
@@ -88,10 +85,11 @@ static bool check_date(std::string linedate) {
 	return true;
 }
 
-// @todo implement error handling
 static bool check_value(std::string lineval) {
-	if (std::atof(lineval.c_str()) > 1000
-		|| lineval.find_first_not_of("0123456789.") != std::string::npos) {
+	if (std::atof(lineval.c_str()) > 1000) {
+		throw BitcoinExchange::TooLargeValueException();
+	}
+	if (lineval.find_first_not_of(DIGITS ".") != std::string::npos) {
 		throw BitcoinExchange::InvalidValueException();
 	}
 	return true;
@@ -115,22 +113,24 @@ std::pair<std::string, double> BitcoinExchange::get_date_value(std::string line)
 		std::string date  = line.substr(0, DATE_LENGTH);
 		std::string value = line.substr(BEGIN_VALUE);
 		check_date(date.erase(4, 1).erase(6, 1));
+		if (value.length() == 0) {
+			throw std::out_of_range("");
+		}
 		if (line.find(" | ") == std::string::npos) {
 			throw BitcoinExchange::MissingSeparatorException();
 		}
 		if (line.substr(DATE_LENGTH, 3) != " | ") {
 			throw BitcoinExchange::InvalidFormattingException();
 		}
-		if (value.length() == 0) {
-			throw BitcoinExchange::LineTooShortException();
-		}
-		if (value.find_first_not_of("0123456789.") != std::string::npos) {
+		if (value.find("-") != std::string::npos) {
 			throw BitcoinExchange::NegativeValueException();
 		}
 		check_value(value);
 	} catch (std::out_of_range& e) {
 		std::cerr << "Error: bad input => " << line << std::endl;
 	} catch (NegativeValueException& e) {
+		std::cerr << e.what() << std::endl;
+	} catch (TooLargeValueException& e) {
 		std::cerr << e.what() << std::endl;
 	}
 

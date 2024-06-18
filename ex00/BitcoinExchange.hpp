@@ -51,6 +51,10 @@ public:
 	public:
 		const char* what() const throw() { return "Error: not a positive number."; }
 	};
+	class TooLargeValueException : public InvalidValueException {
+	public:
+		const char* what() const throw() { return "Error: too large a number."; }
+	};
 	class InvalidLineException : public std::exception {
 		const char* what() const throw() { return "Invalid line."; }
 	};
