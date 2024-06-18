@@ -60,7 +60,6 @@ static int get_month_idx(std::string month) {
 	throw BitcoinExchange::InvalidDateMonths();
 }
 
-// @todo handle month lengths & leap years...
 static bool get_day_idx(std::string day) {
 	for (int i = 0; i < 31; i++) {
 		if (day == DAYS[i]) {
@@ -71,17 +70,15 @@ static bool get_day_idx(std::string day) {
 }
 
 static bool check_date(std::string linedate) {
-	if (linedate[4] != '-' || linedate[7] != '-') {
-		// make sure index 4 and 7 are '-'
-		throw BitcoinExchange::InvalidDateDelimiter();
-	}
-	const std::string year  = linedate.substr(0, 4);
-	const std::string month = linedate.substr(5, 2);
-	const std::string day   = linedate.substr(8, 2);
-	if ((year + month + day).find_first_not_of(DIGITS) != std::string::npos) {
+	std::cout << "check_date: " << linedate << std::endl;
+	const std::string year = linedate.substr(0, 4);
+	const std::string day  = linedate.substr(linedate.length() - 2, 2);
+	std::cout << "year: " << year << std::endl;
+	// std::cout << "day: " << day << std::endl;
+	if (linedate.find_first_not_of(DIGITS) != std::string::npos || year.length() != 4) {
 		throw BitcoinExchange::InvalidDateFormat();
 	}
-	const int month_idx = get_month_idx(month);
+	const int month_idx = get_month_idx(linedate.substr(4, 2));
 	const int day_idx   = get_day_idx(day);
 	// handle max days, including leap years
 	if (day_idx > MONTHS_LENGTH[month_idx]
@@ -110,28 +107,32 @@ std::pair<std::string, double> BitcoinExchange::get_date_value(std::string line)
 	if (line == "date | value") {
 		return std::pair<std::string, double>("", 0);
 	}
-	// try {
-	std::string date = line.substr(0, DATE_LENGTH);
-	// length has to be >= 13
-	std::string value = line.substr(BEGIN_VALUE);
-
-	check_date(date);
-	if (line.substr(DATE_LENGTH, 3) != " | ") {
+	if (line[4] != '-' || line[7] != '-') {
+		throw BitcoinExchange::InvalidDateDelimiter();
+	}
+	// @follow-up do actual handling (exception, return, etc.)
+	try {
+		std::string date  = line.substr(0, DATE_LENGTH);
+		std::string value = line.substr(BEGIN_VALUE);
+		check_date(date.erase(4, 1).erase(6, 1));
 		if (line.find(" | ") == std::string::npos) {
 			throw BitcoinExchange::MissingSeparatorException();
 		}
-		throw BitcoinExchange::InvalidFormattingException();
+		if (line.substr(DATE_LENGTH, 3) != " | ") {
+			throw BitcoinExchange::InvalidFormattingException();
+		}
+		if (value.length() == 0) {
+			throw BitcoinExchange::LineTooShortException();
+		}
+		if (value.find_first_not_of("0123456789.") != std::string::npos) {
+			throw BitcoinExchange::NegativeValueException();
+		}
+		check_value(value);
+	} catch (std::out_of_range& e) {
+		std::cerr << "Error: bad input => " << line << std::endl;
+	} catch (NegativeValueException& e) {
+		std::cerr << e.what() << std::endl;
 	}
-	if (value.length() == 0) {
-		throw BitcoinExchange::LineTooShortException();
-	}
-	if (value.find_first_not_of("0123456789.") != std::string::npos) {
-		throw BitcoinExchange::InvalidValueException();
-	}
-	check_value(value);
-	// } catch (std::exception& e) {
-	// @follow-up do actual handling (exception, return, etc.)
-	// }
 
 	// create split of date | value => std::pair<date, value>
 	return std::pair<std::string, double>("", 0);

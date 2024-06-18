@@ -47,6 +47,10 @@ public:
 	class InvalidValueException : public std::exception {
 		const char* what() const throw() { return "Invalid value."; }
 	};
+	class NegativeValueException : public InvalidValueException {
+	public:
+		const char* what() const throw() { return "Error: not a positive number."; }
+	};
 	class InvalidLineException : public std::exception {
 		const char* what() const throw() { return "Invalid line."; }
 	};
