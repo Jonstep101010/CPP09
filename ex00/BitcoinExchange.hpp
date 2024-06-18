@@ -42,7 +42,7 @@ public:
 	};
 	class InvalidDateFormat : public InvalidDateException {
 	public:
-		const char* what() const throw() { return "Requires '-' as delimiter."; }
+		const char* what() const throw() { return "only \"0123456789-\" are permitted!"; }
 	};
 	class InvalidValueException : public std::exception {
 		const char* what() const throw() { return "Invalid value."; }
@@ -55,6 +55,11 @@ public:
 			return "Missing separator of format \" | \".";
 		}
 	};
+	class InvalidFormattingException : public InvalidLineException {
+		const char* what() const throw() {
+			return "Required format: \"YYYY-MM-DD | value\".";
+		}
+	};
 	class LineTooShortException : public InvalidLineException {
 	public:
 		const char* what() const throw() { return "Line too short."; }
@@ -62,5 +67,3 @@ public:
 
 private:
 };
-
-// std::ostream& operator<<(std::ostream& o, BitcoinExchange const& i);

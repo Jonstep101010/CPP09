@@ -45,6 +45,9 @@ BitcoinExchange& BitcoinExchange::operator=(BitcoinExchange const& rhs) {
 
 #define DIGITS "0123456789"
 
+#define BEGIN_VALUE 13
+#define DATE_LENGTH 10
+
 // @todo handle month lengths & leap years...
 static bool check_months(std::string month) {
 	for (int i = 0; i < 12; i++) {
@@ -67,10 +70,8 @@ static bool check_days(std::string day) {
 
 // @todo
 static bool check_date(std::string linedate) {
+	std::cout << "check_date: " << linedate << std::endl;
 	// @follow-up create more specific exceptions
-	if (linedate.length() != 10) {
-		throw BitcoinExchange::InvalidDateException();
-	}
 	if (linedate[4] != '-' || linedate[7] != '-') {
 		// make sure index 4 and 7 are '-'
 		throw BitcoinExchange::InvalidDateDelimiter();
@@ -114,20 +115,23 @@ std::pair<std::string, double> BitcoinExchange::get_date_value(std::string line)
 		return std::pair<std::string, double>("", 0);
 	}
 	// try {
-	if (line.find(" | ") == std::string::npos) {
-		// line[10,11,12] = " | "
-		throw BitcoinExchange::MissingSeparatorException();
-	}
-	std::string date = line.substr(0, 10);
+	std::string date = line.substr(0, DATE_LENGTH);
 	// length has to be >= 13
-	std::string value = line.substr(13);
-	if (date.length() != 10 || value.length() == 0) {
+	std::string value = line.substr(BEGIN_VALUE);
+
+	check_date(date);
+	if (line.substr(DATE_LENGTH, 3) != " | ") {
+		if (line.find(" | ") == std::string::npos) {
+			throw BitcoinExchange::MissingSeparatorException();
+		}
+		throw BitcoinExchange::InvalidFormattingException();
+	}
+	if (value.length() == 0) {
 		throw BitcoinExchange::LineTooShortException();
 	}
 	if (value.find_first_not_of("0123456789.") != std::string::npos) {
 		throw BitcoinExchange::InvalidValueException();
 	}
-	check_date(date);
 	check_value(value);
 	// } catch (std::exception& e) {
 	// @follow-up do actual handling (exception, return, etc.)
