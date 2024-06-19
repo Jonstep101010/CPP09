@@ -46,6 +46,7 @@ public:
 		const char* what() const throw() { return "only \"0123456789-\" are permitted!"; }
 	};
 	class InvalidValueException : public std::exception {
+	public:
 		const char* what() const throw() { return "Invalid value."; }
 	};
 	class NegativeValueException : public InvalidValueException {
