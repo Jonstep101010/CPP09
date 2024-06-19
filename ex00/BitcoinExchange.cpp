@@ -150,22 +150,22 @@ void BitcoinExchange::create_db() {
 	std::ifstream dbfile("data.csv");
 	std::string   dbline;
 	if (!dbfile.is_open()) {
-		std::cerr << "Error: could not data.csv." << std::endl;
-		exit(1);
+		throw DBCreationException();
 	}
 	if (!std::getline(dbfile, dbline) || dbline != "date,exchange_rate") {
-		std::cerr << "Error: invalid data.csv." << std::endl;
-		exit(1);
+		dbfile.close();
+		throw DBCreationException();
 	}
 	for (; std::getline(dbfile, dbline);) {
 		if (dbline != "date,exchange_rate" && !dbline.empty()
 			&& dbline.find_first_not_of(DIGITS ",.-") == std::string::npos) {
 			_db.insert(get_date_value_db(dbline));
 		} else if (dbline.find_first_not_of(DIGITS ",.-") != std::string::npos) {
-			std::cerr << "Error: invalid data.csv." << std::endl;
-			exit(1);
+			dbfile.close();
+			throw DBCreationException();
 		}
 	}
+	dbfile.close();
 }
 
 /**
@@ -197,22 +197,28 @@ void BitcoinExchange::runExchange(std::pair<std::string, double> date_value) {
  * 
  */
 BitcoinExchange::BitcoinExchange(std::ifstream& infile) {
-	create_db();
-	std::string line;
-	if (std::getline(infile, line) && line != "date | value") {
-		std::cerr << "Error: invalid input file." << std::endl;
-	} else {
-		for (std::string line; std::getline(infile, line);) {
-			try {
-				std::pair<std::string, double> date_value = get_date_value_input(line);
-				runExchange(date_value);
-			} catch (NegativeValueException& e) {
-				std::cerr << e.what() << std::endl;
-			} catch (TooLargeValueException& e) {
-				std::cerr << e.what() << std::endl;
-			} catch (std::exception& e) {
-				std::cerr << "Error: bad input => " << line << std::endl;
-			}
+	try {
+		create_db();
+		std::string line;
+		if (!std::getline(infile, line)
+			|| (std::getline(infile, line) && line != "date | value")) {
+			std::cerr << "Error: invalid input file." << std::endl;
+		}
+	} catch (DBCreationException& e) {
+		infile.close();
+		std::cerr << e.what() << std::endl;
+		return;
+	}
+	for (std::string line; std::getline(infile, line);) {
+		try {
+			std::pair<std::string, double> date_value = get_date_value_input(line);
+			runExchange(date_value);
+		} catch (NegativeValueException& e) {
+			std::cerr << e.what() << std::endl;
+		} catch (TooLargeValueException& e) {
+			std::cerr << e.what() << std::endl;
+		} catch (std::exception& e) {
+			std::cerr << "Error: bad input => " << line << std::endl;
 		}
 	}
 	infile.close();

@@ -19,6 +19,10 @@ public:
 	void                                  create_db();
 	void runExchange(std::pair<std::string, double> date_value);
 
+	class DBCreationException : public std::exception {
+	public:
+		const char* what() const throw() { return "Error: invalid data.csv"; }
+	};
 	class InvalidDateException : public std::exception {
 		const char* what() const throw() { return "Invalid date."; }
 	};
