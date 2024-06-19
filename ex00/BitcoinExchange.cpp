@@ -169,40 +169,49 @@ void BitcoinExchange::create_db() {
 }
 
 /**
+ * @brief find date in _db (lower date if not found)
+ * 
+ * @param date_value key value pair
+ */
+void BitcoinExchange::runExchange(std::pair<std::string, double> date_value) {
+	for (std::map<std::string, double>::iterator it = _db.begin(); it != _db.end();
+		 ++it) {
+		if (it->first >= date_value.first) {
+			// walk back to find the closest date
+			for (; it->first > date_value.first && it != _db.begin(); --it) {
+			}
+			// std::cout << "date_value.first: '" << date_value.first
+			// 		  << "' db_date: '" << it->first << "'" << std::endl;
+			// in place calculate value * exchange_rate
+			double exchange_rate = it->second * date_value.second;
+			// print in format "date => value = exchange_rate"
+			std::cout << date_value.first << " => " << date_value.second << " = "
+					  << exchange_rate << std::endl;
+			break;
+		}
+	}
+}
+
+/**
  * @brief load data.csv, read input file and validate, run date comparison, calculate rates
  * 
  */
 BitcoinExchange::BitcoinExchange(std::ifstream& infile) {
 	create_db();
-
-	for (std::string line; std::getline(infile, line);) {
-		if (line != "date | value") {
+	std::string line;
+	if (std::getline(infile, line) && line != "date | value") {
+		std::cerr << "Error: invalid input file." << std::endl;
+	} else {
+		for (std::string line; std::getline(infile, line);) {
 			try {
 				std::pair<std::string, double> date_value = get_date_value_input(line);
-				// find date in _db (lower date if not found)
-				for (std::map<std::string, double>::iterator it = _db.begin();
-					 it != _db.end(); ++it) {
-					if (it->first >= date_value.first) {
-						// walk back to find the closest date
-						for (; it->first > date_value.first && it != _db.begin(); --it) {
-						}
-						// std::cout << "date_value.first: '" << date_value.first
-						// 		  << "' db_date: '" << it->first << "'" << std::endl;
-						// in place calculate value * exchange_rate
-						double exchange_rate = it->second * date_value.second;
-						// print in format "date => value = exchange_rate"
-						std::cout << date_value.first << " => " << date_value.second
-								  << " = " << exchange_rate << std::endl;
-						break;
-					}
-				}
-			} catch (std::out_of_range& e) {
-				std::cerr << "Error: bad input => " << line << std::endl;
+				runExchange(date_value);
 			} catch (NegativeValueException& e) {
 				std::cerr << e.what() << std::endl;
 			} catch (TooLargeValueException& e) {
 				std::cerr << e.what() << std::endl;
-			} catch (InvalidValueException& e) {
+			} catch (std::exception& e) {
+				std::cerr << "Error: bad input => " << line << std::endl;
 			}
 		}
 	}

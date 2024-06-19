@@ -17,6 +17,7 @@ public:
 
 	static std::pair<std::string, double> get_date_value_input(std::string line);
 	void                                  create_db();
+	void runExchange(std::pair<std::string, double> date_value);
 
 	class InvalidDateException : public std::exception {
 		const char* what() const throw() { return "Invalid date."; }
