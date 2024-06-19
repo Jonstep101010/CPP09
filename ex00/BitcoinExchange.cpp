@@ -32,70 +32,37 @@ BitcoinExchange& BitcoinExchange::operator=(BitcoinExchange const& rhs) {
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
-#define DAYS                                                                             \
-	(char[31][3]) {                                                                      \
-		"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13",    \
-			"14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25",      \
-			"26", "27", "28", "29", "30", "31"                                           \
-	}
-#define MONTHS                                                                           \
-	(char[12][3]) {                                                                      \
-		"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"           \
-	}
 
-#define MONTHS_LENGTH                                                                    \
-	(int[12]) { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }
-
-#define DIGITS "0123456789"
-
-#define BEGIN_VALUE 13
-#define DATE_LENGTH 10
-#define MONTHS_YEAR 12
-#define MAX_INPUT_VALUE 1000
-#define MAX_DAYS_MONTHS 31
-#define DDELIM_ONE 4
-#define DDELIM_TWO 7
-
-static int get_month_idx(std::string month) {
-	for (int i = 0; i < MONTHS_YEAR; i++) {
-		if (month == MONTHS[i]) {
-			return i;
-		}
-	}
-	throw BitcoinExchange::InvalidDateMonths();
-}
-
-static bool get_day_idx(std::string day) {
-	for (int i = 0; i < MAX_DAYS_MONTHS; i++) {
-		if (day == DAYS[i]) {
-			return i;
-		}
-	}
-	throw BitcoinExchange::InvalidDateDays();
-}
-
-static bool check_date(std::string line) {
+static bool check_date(std::string const& line) {
+	static const int DDELIM_ONE = 4, DDELIM_TWO = 7;
 	if (line[DDELIM_ONE] != '-' || line[DDELIM_TWO] != '-') {
 		throw BitcoinExchange::InvalidDateDelimiter();
 	}
-	const std::string linedate = line.erase(DDELIM_ONE, 1).erase(DDELIM_TWO - 1, 1);
-	const std::string year     = linedate.substr(0, 4);
-	const std::string day      = linedate.substr(linedate.length() - 2, 2);
+	std::string linedate = line;
+	linedate.erase(DDELIM_ONE, 1).erase(DDELIM_TWO - 1, 1);
+	const std::string year = linedate.substr(0, 4);
+	const std::string day  = linedate.substr(linedate.length() - 2, 2);
 	if (linedate.find_first_not_of(DIGITS) != std::string::npos || year.length() != 4) {
 		throw BitcoinExchange::InvalidDateFormat();
 	}
-	const int month_idx = get_month_idx(linedate.substr(4, 2));
-	const int day_idx   = get_day_idx(day);
-	// handle max days, including leap years
-	if (day_idx > MONTHS_LENGTH[month_idx]
-		|| (month_idx == 2 && day_idx == MONTHS_LENGTH[month_idx]
-			&& std::atoi(year.c_str()) % 4 != 0)) {
+	const int        month_idx         = std::atoi((linedate.substr(4, 2).c_str()));
+	const int        day_idx           = std::atoi(day.c_str());
+	static const int MONTHS_LENGTH[12] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+	static const int MONTHS_YEAR       = 12;
+	if (month_idx < 1 || month_idx > MONTHS_YEAR) {
+		throw BitcoinExchange::InvalidDateMonths();
+	}
+	if (day_idx < 1 || day_idx > MONTHS_LENGTH[month_idx - 1]) {
+		throw BitcoinExchange::InvalidDateDays();
+	}
+	if (month_idx == 2 && day_idx == MONTHS_LENGTH[month_idx]
+		&& std::atoi(year.c_str()) % 4 != 0) {
 		throw BitcoinExchange::InvalidDateDays();
 	}
 	return true;
 }
 
-static bool check_value(std::string lineval) {
+static bool check_value(std::string const& lineval) {
 	if (lineval.length() == 0) {
 		throw std::out_of_range("");
 	}
@@ -114,7 +81,8 @@ static bool check_value(std::string lineval) {
  * @param line 
  * @return std::pair<std::string, double> 
  */
-std::pair<std::string, double> BitcoinExchange::get_date_value_input(std::string line) {
+std::pair<std::string, double>
+BitcoinExchange::get_date_value_input(std::string const& line) {
 	const std::string date  = line.substr(0, DATE_LENGTH);
 	const std::string value = line.substr(BEGIN_VALUE);
 	check_date(date);
@@ -128,7 +96,7 @@ std::pair<std::string, double> BitcoinExchange::get_date_value_input(std::string
 	return std::make_pair(date, std::atof(value.c_str()));
 }
 
-static std::pair<std::string, double> get_date_value_db(std::string dbline) {
+static std::pair<std::string, double> get_date_value_db(std::string const& dbline) {
 	const std::string date  = dbline.substr(0, DATE_LENGTH);
 	const std::string value = dbline.substr(DATE_LENGTH + 1);
 	check_date(date);
@@ -200,8 +168,7 @@ BitcoinExchange::BitcoinExchange(std::ifstream& infile) {
 	try {
 		create_db();
 		std::string line;
-		if (!std::getline(infile, line)
-			|| (std::getline(infile, line) && line != "date | value")) {
+		if (std::getline(infile, line) && line != "date | value") {
 			std::cerr << "Error: invalid input file." << std::endl;
 		}
 	} catch (DBCreationException& e) {

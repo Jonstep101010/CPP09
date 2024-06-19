@@ -3,6 +3,11 @@
 #include <map>
 #include <string>
 
+#define DIGITS "0123456789"
+#define BEGIN_VALUE 13
+#define DATE_LENGTH 10
+#define MAX_INPUT_VALUE 1000
+
 class BitcoinExchange {
 
 public:
@@ -15,7 +20,7 @@ public:
 
 	std::map<std::string, double> _db;
 
-	static std::pair<std::string, double> get_date_value_input(std::string line);
+	static std::pair<std::string, double> get_date_value_input(std::string const& line);
 	void                                  create_db();
 	void runExchange(std::pair<std::string, double> date_value);
 
