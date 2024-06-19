@@ -7,15 +7,16 @@ class BitcoinExchange {
 
 public:
 	BitcoinExchange();
-	BitcoinExchange(std::ifstream& db_filename);
+	BitcoinExchange(std::ifstream& infile);
 	BitcoinExchange(BitcoinExchange const& src);
 	~BitcoinExchange();
 
 	BitcoinExchange& operator=(BitcoinExchange const& rhs);
 
-	std::map<std::string, double> db;
+	std::map<std::string, double> _db;
 
-	std::pair<std::string, double> get_date_value(std::string line);
+	static std::pair<std::string, double> get_date_value_input(std::string line);
+	void                                  create_db();
 
 	class InvalidDateException : public std::exception {
 		const char* what() const throw() { return "Invalid date."; }
