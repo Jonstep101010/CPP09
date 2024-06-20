@@ -74,14 +74,53 @@ static void validate(std::string const& expression) {
 }
 
 /**
- * @brief execute the RPN expression
- * @note requires _stack to be filled with the parsed expression
+ * @brief apply an operator to the last two numbers in the stack, then push the result back
+ * @note requires _stack to be filled with the two numbers
  */
-void RPN::run() {
-	// scan until encountering an operator
+void RPN::run(Operator op) {
 	// pop the last two numbers from the stack
-	// apply the operator
-	// push the result back onto the stack
+	int b = _stack.top();
+	_stack.pop();
+	int a = _stack.top();
+	_stack.pop();
+	int result = 0;
+	switch (op) {
+	case ADD: {
+		result = a + b;
+		break;
+	};
+	case SUB: {
+		std::cout << "a: " << a << " b: " << b << std::endl;
+		result = a - b;
+		std::cout << "result: " << result << std::endl;
+		break;
+	};
+	case MUL: {
+		result = a * b;
+		break;
+	};
+	case DIV: // @audit guard against division by zero in validate
+	{
+		result = a / b;
+		break;
+	};
+	}
+	_stack.push(result);
+}
+
+static bool is_operator(char c) { return c == '+' || c == '-' || c == '*' || c == '/'; }
+
+void RPN::execute(std::string const& expression) {
+	// parse until encountering an operator
+	for (size_t i = 0; i < expression.size(); i++) {
+		if (isdigit(expression[i])) {
+			_stack.push(expression[i] - '0');
+		}
+		if (is_operator(expression[i])) {
+			run(static_cast<Operator>(expression[i]));
+		}
+	}
+	std::cout << "result: " << _stack.top() << std::endl;
 }
 
 /**
@@ -91,9 +130,7 @@ void RPN::run() {
  */
 RPN::RPN(std::string const& expression) {
 	validate(expression);
-	// parse
-	RPN::parse(expression);
-	// execute
+	RPN::execute(expression);
 }
 
 RPN::RPN(const RPN& src)
@@ -110,11 +147,9 @@ RPN::~RPN() {}
 */
 
 RPN& RPN::operator=(RPN const& rhs) {
-	//if ( this != &rhs )
-	//{
-	//this->_value = rhs.getValue();
-	//}
-	(void)rhs;
+	if (this != &rhs) {
+		_stack = rhs._stack;
+	}
 	return *this;
 }
 
