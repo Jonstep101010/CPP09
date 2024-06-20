@@ -6,7 +6,9 @@ class RPN {
 
 public:
 	RPN();
-	RPN(std::string expression);
+	RPN(std::string const& expression);
+	void run();
+	void parse(std::string const& expression);
 	RPN(RPN const& src);
 	~RPN();
 
