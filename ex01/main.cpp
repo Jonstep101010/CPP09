@@ -1,5 +1,4 @@
 #include "RPN.hpp"
-#include <fstream>
 #include <iostream>
 
 int main(int argc, char** argv) {
@@ -9,10 +8,13 @@ int main(int argc, char** argv) {
 		RPN execute(argv[1]);
 		return 0;
 	}
-	std::cerr << "usage:\n./btc <db_filename>\n";
+	std::cerr << "usage:\n./RPN <expression>\n";
 	return 1;
 }
 
+// RPN: 3 4 + => 7, 3 4 - => -1
+// 7 * 11 => 77 = (3 + 4) × (5 + 6), RPN: 3 4 + 5 6 + × (add 3 and 4, then add 5 and 6, then multiply the results)
+// RPN: 1 2 * 3 + 4 5 * + => (1 * 2) + 3 + (4 * 5) => 2 + 3 + 20 => 5 + 20 => 25
 
 /*
 
