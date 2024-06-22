@@ -2,10 +2,11 @@
 #include <iostream>
 
 int main(int argc, char** argv) {
-	if (argc < 2) {
+	if (argc > 2) {
 		// validate input
 		// sort using merge-insertion sort (Ford-Johnson algorithm)
-		PmergeMe something(argv);
+		PmergeMe numbers(argv);
+		numbers.sort();
 		return 0;
 	}
 	std::cerr << "usage:\n./PmergeMe <list of positive numbers>\n";
