@@ -28,5 +28,23 @@ private:
 	// indexing slower than vector, but faster insertion/deletion at ends
 	std::deque<int> numbers_deq;
 
+	// bool	is_odd; indicated by size
+	// size_t size;
+	int unpaired;
+
+	// clang-format off
+	std::vector<std::pair<int, int> > pairs;
+	// clang-format on
+	std::vector<int> main_chain;
+	std::vector<int> pend;
+
+	std::vector<int> jacobsthal;
+
+	void set_jacobsthal(size_t size);
+
+	// @follow-up use std::pair for sorting?
+
 	void onlyUniqueVec(int num);
+	void createPairs();
+	void unsortEachPair();
 };
