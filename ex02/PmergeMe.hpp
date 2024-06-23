@@ -47,4 +47,9 @@ private:
 	void onlyUniqueVec(int num);
 	void createPairs();
 	void unsortEachPair();
+	void sortPairsByFirst();
+
+	// clang-format off
+	std::vector<std::pair<int, int> >::iterator findLargest(std::vector<std::pair<int, int> >::iterator exclude);
+	// clang-format on
 };

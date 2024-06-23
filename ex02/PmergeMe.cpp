@@ -119,6 +119,46 @@ void PmergeMe::unsortEachPair() {
 		 it != pairs.end(); ++it) {
 		std::cout << "[" << it->first << " " << it->second << "] ";
 	}
+	std::cout << std::endl;
+}
+
+// clang-format off
+std::vector<std::pair<int, int> >::iterator PmergeMe::findLargest(std::vector<std::pair<int, int> >::iterator exclude) {
+	std::vector<std::pair<int, int> >::iterator largest = pairs.begin();
+	for (std::vector<std::pair<int, int> >::iterator it = pairs.begin();
+		 it != pairs.end(); ++it) {
+	// clang-format on	
+		if (it->first > largest->first && it != exclude) {
+			largest = it;
+		}
+	}
+	return largest;
+}
+
+void PmergeMe::sortPairsByFirst() {
+	// find largest first element in pair and move to the end
+	// clang-format off
+	std::vector<std::pair<int, int> >::iterator lastunsorted;
+	for (size_t i = 0; i < pairs.size(); i++){
+		lastunsorted = pairs.end() - 1;
+		std::vector<std::pair<int, int> >::iterator largest = findLargest(lastunsorted);
+
+		if (largest != lastunsorted - 1) {
+            std::swap(*largest, *(lastunsorted - 1));
+        }
+	}
+	if (pairs.end()->first < findLargest(pairs.end() - 1)->first) {
+		std::swap(*findLargest(lastunsorted), *lastunsorted);
+	}
+	// print sorted pairs
+	std::cout << "Sorted Pairs: ";
+	for (std::vector<std::pair<int, int> >::iterator it = pairs.begin();
+		 // clang-format on
+		 it != pairs.end(); ++it) {
+		std::cout << "[" << it->first << " " << it->second << "] ";
+	}
+	std::cout << std::endl;
+	// clang-format on
 }
 
 void PmergeMe::sort() {
@@ -128,6 +168,7 @@ void PmergeMe::sort() {
 	printVector(numbers_vec);
 	createPairs();
 	unsortEachPair();
+	sortPairsByFirst();
 	set_jacobsthal(numbers_vec.size());
 	// std::cout << "Jacobsthal: ";
 	// printVector(jacobsthal);
