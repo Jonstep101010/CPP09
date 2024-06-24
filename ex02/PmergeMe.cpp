@@ -161,6 +161,32 @@ void PmergeMe::sortPairsByFirst() {
 	// clang-format on
 }
 
+void PmergeMe::collectPairs() {
+	if (pairs[0].second < pairs[0].first) {
+		main_chain.push_back(pairs[0].second);
+		main_chain.push_back(pairs[0].first);
+		pairs.erase(pairs.begin());
+	}
+	for (size_t i = 0; i < pairs.size(); i++) {
+		main_chain.push_back(pairs[i].first);
+	}
+	for (size_t i = 0; i < pairs.size(); i++) {
+		pend.push_back(pairs[i].second);
+	}
+	// print main_chain and pend
+	std::cout << "main_chain: [";
+	for (std::vector<int>::iterator it = main_chain.begin(); it != main_chain.end();
+		 ++it) {
+		std::cout << *it << " ";
+	}
+	std::cout << "]" << std::endl;
+	std::cout << "pend: [";
+	for (std::vector<int>::iterator it = pend.begin(); it != pend.end(); ++it) {
+		std::cout << *it << " ";
+	}
+	std::cout << "]" << std::endl;
+}
+
 void PmergeMe::sort() {
 	// requires parsed input
 	// Print before
@@ -169,6 +195,7 @@ void PmergeMe::sort() {
 	createPairs();
 	unsortEachPair();
 	sortPairsByFirst();
+	collectPairs();
 	set_jacobsthal(numbers_vec.size());
 	// std::cout << "Jacobsthal: ";
 	// printVector(jacobsthal);

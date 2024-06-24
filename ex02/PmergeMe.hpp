@@ -48,6 +48,7 @@ private:
 	void createPairs();
 	void unsortEachPair();
 	void sortPairsByFirst();
+	void collectPairs();
 
 	// clang-format off
 	std::vector<std::pair<int, int> >::iterator findLargest(std::vector<std::pair<int, int> >::iterator exclude);
