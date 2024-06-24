@@ -136,25 +136,23 @@ std::vector<std::pair<int, int> >::iterator PmergeMe::findLargest(std::vector<st
 }
 
 void PmergeMe::sortPairsByFirst() {
-	// find largest first element in pair and move to the end
 	// clang-format off
 	std::vector<std::pair<int, int> >::iterator lastunsorted;
-	// @audit fix invalit ptr
-	for (size_t i = 0; i < pairs.size(); i++){
+	for (size_t i = 0; i < pairs.size(); i++) {
 		lastunsorted = pairs.end() - 1;
 		std::vector<std::pair<int, int> >::iterator largest = findLargest(lastunsorted);
-
+		// clang-format on
 		if (largest != lastunsorted - 1 && pairs.size() > 1) {
 			std::swap(*largest, *(lastunsorted - 1));
 		}
 	}
-	if (pairs.end()->first < findLargest(pairs.end() - 1)->first) {
+	if (pairs.end()->first < findLargest(pairs.end() - 1)->first
+		&& findLargest(lastunsorted)->first > lastunsorted->first) {
 		std::swap(*findLargest(lastunsorted), *lastunsorted);
 	}
 	// print sorted pairs
 	std::cout << "Sorted ";
 	printPairsVec(pairs);
-	// clang-format on
 }
 
 void PmergeMe::collectPairs() {
