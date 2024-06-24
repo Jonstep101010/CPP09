@@ -82,6 +82,17 @@ static void printVector(std::vector<int> const& vec) {
 	std::cout << std::endl;
 }
 
+// clang-format off
+static void printPairsVec(std::vector<std::pair<int, int> > const& vec) {
+	std::cout << "Pairs: ";
+	for (std::vector<std::pair<int, int> >::const_iterator it = vec.begin();
+		 // clang-format on
+		 it != vec.end(); ++it) {
+		std::cout << "[" << it->first << " " << it->second << "] ";
+	}
+	std::cout << std::endl;
+}
+
 void PmergeMe::createPairs() {
 	if (numbers_vec.size() % 2 != 0) {
 		unpaired = numbers_vec.back();
@@ -94,13 +105,7 @@ void PmergeMe::createPairs() {
 		pairs.push_back(std::make_pair(numbers_vec[i], numbers_vec[i + 1]));
 	}
 	std::cout << "Pairs: ";
-	// clang-format off
-	for (std::vector<std::pair<int, int> >::iterator it = pairs.begin();
-		 // clang-format on
-		 it != pairs.end(); ++it) {
-		std::cout << "[" << it->first << " " << it->second << "] ";
-	}
-	std::cout << std::endl;
+	printPairsVec(pairs);
 }
 
 void PmergeMe::unsortEachPair() {
@@ -113,13 +118,7 @@ void PmergeMe::unsortEachPair() {
 		}
 	}
 	std::cout << "Unsorted: ";
-	// clang-format off
-	for (std::vector<std::pair<int, int> >::iterator it = pairs.begin();
-		 // clang-format on
-		 it != pairs.end(); ++it) {
-		std::cout << "[" << it->first << " " << it->second << "] ";
-	}
-	std::cout << std::endl;
+	printPairsVec(pairs);
 }
 
 // clang-format off
@@ -151,13 +150,8 @@ void PmergeMe::sortPairsByFirst() {
 		std::swap(*findLargest(lastunsorted), *lastunsorted);
 	}
 	// print sorted pairs
-	std::cout << "Sorted Pairs: ";
-	for (std::vector<std::pair<int, int> >::iterator it = pairs.begin();
-		 // clang-format on
-		 it != pairs.end(); ++it) {
-		std::cout << "[" << it->first << " " << it->second << "] ";
-	}
-	std::cout << std::endl;
+	std::cout << "Sorted ";
+	printPairsVec(pairs);
 	// clang-format on
 }
 
