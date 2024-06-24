@@ -21,6 +21,7 @@ public:
 	};
 
 private:
+	size_t size;
 	// heap-array (contiguous memory)
 	// insertions/deletions at beginning/middle slower than deque (re-allocation, copying)
 	std::vector<int> numbers_vec;
@@ -49,6 +50,7 @@ private:
 	void unsortEachPair();
 	void sortPairsByFirst();
 	void collectPairs();
+	void insertionSort();
 
 	// clang-format off
 	std::vector<std::pair<int, int> >::iterator findLargest(std::vector<std::pair<int, int> >::iterator exclude);

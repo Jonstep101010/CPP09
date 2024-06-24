@@ -9,15 +9,15 @@
 */
 
 PmergeMe::PmergeMe()
-	: unpaired(0) {}
+	: size(0), unpaired(0) {}
 
 PmergeMe::PmergeMe(const PmergeMe& src)
-	: unpaired(0) {
+	: size(0), unpaired(0) {
 	*this = src;
 }
 
 PmergeMe::PmergeMe(char** argv)
-	: unpaired(0) {
+	: size(0), unpaired(0) {
 	while (*++argv) {
 		std::string str(*argv);
 		if (str.find_first_not_of("0123456789") != std::string::npos) {
@@ -31,6 +31,7 @@ PmergeMe::PmergeMe(char** argv)
 		numbers_vec.push_back(num);
 		numbers_deq.push_back(num);
 	}
+	size = numbers_vec.size();
 }
 
 /*
@@ -138,13 +139,14 @@ void PmergeMe::sortPairsByFirst() {
 	// find largest first element in pair and move to the end
 	// clang-format off
 	std::vector<std::pair<int, int> >::iterator lastunsorted;
+	// @audit fix invalit ptr
 	for (size_t i = 0; i < pairs.size(); i++){
 		lastunsorted = pairs.end() - 1;
 		std::vector<std::pair<int, int> >::iterator largest = findLargest(lastunsorted);
 
-		if (largest != lastunsorted - 1) {
-            std::swap(*largest, *(lastunsorted - 1));
-        }
+		if (largest != lastunsorted - 1 && pairs.size() > 1) {
+			std::swap(*largest, *(lastunsorted - 1));
+		}
 	}
 	if (pairs.end()->first < findLargest(pairs.end() - 1)->first) {
 		std::swap(*findLargest(lastunsorted), *lastunsorted);
@@ -156,7 +158,7 @@ void PmergeMe::sortPairsByFirst() {
 }
 
 void PmergeMe::collectPairs() {
-	if (pairs[0].second < pairs[0].first) {
+	if (pairs[0].second < pairs[0].first && pairs.size() > 1) {
 		main_chain.push_back(pairs[0].second);
 		main_chain.push_back(pairs[0].first);
 		pairs.erase(pairs.begin());
@@ -181,6 +183,36 @@ void PmergeMe::collectPairs() {
 	std::cout << "]" << std::endl;
 }
 
+void PmergeMe::insertionSort() {
+	// make use of jacobsthal
+	set_jacobsthal(pend.size());
+	std::cout << "Jacobsthal: ";
+	printVector(jacobsthal);
+	for (size_t i = 0; i < jacobsthal.size() && i < pend.size(); ++i) {
+		std::vector<int>::iterator upper
+			= std::upper_bound(main_chain.begin(), main_chain.end(), pend[jacobsthal[i]]);
+		std::cout << "upper: " << *upper << std::endl;
+		if (std::find(main_chain.begin(), main_chain.end(), pend[jacobsthal[i]])
+			== main_chain.end()) {
+			main_chain.insert(upper, pend[jacobsthal[i]]);
+		} else {
+			int tmp = pend.back();
+			std::cout << "tmp: " << tmp << std::endl;
+			upper = std::upper_bound(main_chain.begin(), main_chain.end(), tmp);
+			main_chain.insert(upper, tmp);
+		}
+		printVector(pend);
+		printVector(main_chain);
+	}
+	// handle unpaired
+	if (size % 2 != 0) {
+		// @audit not working if last elem is greater than others
+		std::vector<int>::iterator upper
+			= std::upper_bound(main_chain.begin(), main_chain.end(), unpaired);
+		main_chain.insert(upper, unpaired);
+	}
+}
+
 void PmergeMe::sort() {
 	// requires parsed input
 	// Print before
@@ -190,9 +222,9 @@ void PmergeMe::sort() {
 	unsortEachPair();
 	sortPairsByFirst();
 	collectPairs();
-	set_jacobsthal(numbers_vec.size());
-	// std::cout << "Jacobsthal: ";
-	// printVector(jacobsthal);
+	// run insertion algo
+	insertionSort();
+
 	// start timer 1
 	// Sort 1
 	// end timer 1
@@ -201,7 +233,7 @@ void PmergeMe::sort() {
 	// end timer 2
 	// Print after
 	std::cout << "After: ";
-	printVector(numbers_vec);
+	printVector(main_chain);
 	// Print time 1
 	// Print time 2
 }
