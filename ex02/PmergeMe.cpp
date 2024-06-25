@@ -227,7 +227,7 @@ static void assertMainSorted(std::vector<int> inputvec, int unpaired, size_t siz
 	}
 }
 
-void PmergeMe::insertionSort() {
+void PmergeMe::insertionSortVector() {
 	// make use of jacobsthal
 	set_jacobsthal(pend.size());
 	for (size_t i = 0; !pend.empty(); i++) {
@@ -250,6 +250,10 @@ void PmergeMe::insertionSort() {
 	assertMainSorted(numbers_vec, unpaired, size, main_chain);
 }
 
+void PmergeMe::insertionSortDeque() {
+	// @todo implement insertion sort for deque
+}
+
 void PmergeMe::sort() {
 	// requires parsed input
 	// Print before
@@ -259,14 +263,14 @@ void PmergeMe::sort() {
 	unsortEachPair();
 	sortPairsByFirst();
 	collectPairs();
-	// run insertion algo
-	insertionSort();
 
 	// start timer 1
 	// Sort 1
+	insertionSortVector();
 	// end timer 1
 	// start timer 2
 	// Sort 2
+	insertionSortDeque();
 	// end timer 2
 	// Print after
 	std::cout << "After: ";

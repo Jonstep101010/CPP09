@@ -50,7 +50,8 @@ private:
 	void unsortEachPair();
 	void sortPairsByFirst();
 	void collectPairs();
-	void insertionSort();
+	void insertionSortVector();
+	void insertionSortDeque();
 
 	// clang-format off
 	std::vector<std::pair<int, int> >::iterator findLargest_range(std::vector<std::pair<int, int> >::iterator start, std::vector<std::pair<int, int> >::iterator end);
