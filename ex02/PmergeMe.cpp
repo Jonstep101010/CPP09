@@ -209,16 +209,15 @@ void PmergeMe::insertionSort() {
 	std::vector<int>::iterator upper;
 	size_t                     i = 0;
 	while (!pend.empty()) {
-		if (i < jacobsthal.size() && pend.size() > 1) {
-			upper = std::upper_bound(main_chain.begin(), main_chain.end(),
-									 pend[jacobsthal[i]]);
-			main_chain.insert(upper, pend[jacobsthal[i]]);
-			pend.erase(pend.begin() + jacobsthal[i]);
-		} else {
-			upper = std::upper_bound(main_chain.begin(), main_chain.end(), pend[0]);
-			main_chain.insert(upper, pend[0]);
-			pend.erase(pend.begin() + pend[0]);
-		}
+		upper = std::upper_bound(
+			main_chain.begin(), main_chain.end(),
+			(i < jacobsthal.size() && pend.size() > 1 ? pend[jacobsthal[i]] : pend[0]));
+		main_chain.insert(
+			upper,
+			(i < jacobsthal.size() && pend.size() > 1 ? pend[jacobsthal[i]] : pend[0]));
+		pend.erase(
+			pend.begin()
+			+ (i < jacobsthal.size() && pend.size() > 1 ? jacobsthal[i] : pend[0]));
 		std::cout << "inserting pend elem " << pend[0] << " at upper: " << *upper
 				  << std::endl;
 		printVectorName(main_chain, "main_chain");
