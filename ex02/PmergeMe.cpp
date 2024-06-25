@@ -4,6 +4,8 @@
 #include <iterator>
 #include <vector>
 
+static void printVectorName(std::vector<int> const& vec, std::string vecname);
+
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
@@ -66,6 +68,7 @@ void PmergeMe::set_jacobsthal(size_t size) {
 	} else {
 		jacobsthal.push_back(0);
 	}
+	printVectorName(jacobsthal, "Jacobsthal");
 }
 
 /**
@@ -203,22 +206,14 @@ void PmergeMe::collectPairs() {
 void PmergeMe::insertionSort() {
 	// make use of jacobsthal
 	set_jacobsthal(pend.size());
-	std::cout << "Jacobsthal: ";
-	printVector(jacobsthal);
-	for (size_t i = 0; i < jacobsthal.size() && i < pend.size(); ++i) {
-		std::vector<int>::iterator upper
-			= std::upper_bound(main_chain.begin(), main_chain.end(), pend[jacobsthal[i]]);
-		std::cout << "upper: " << *upper << std::endl;
-		if (std::find(main_chain.begin(), main_chain.end(), pend[jacobsthal[i]])
-			== main_chain.end()) {
-			main_chain.insert(upper, pend[jacobsthal[i]]);
-		} else {
-			int tmp = pend.back();
-			std::cout << "tmp: " << tmp << std::endl;
-			upper = std::upper_bound(main_chain.begin(), main_chain.end(), tmp);
-			main_chain.insert(upper, tmp);
-			pend.erase(pend.begin());
-		}
+	std::vector<int>::iterator upper;
+	for (size_t i = 0; i < jacobsthal.size() && !pend.empty(); ++i) {
+		const int& val = pend.size() == 1 ? pend[0] : pend[jacobsthal[i]];
+		upper          = std::upper_bound(main_chain.begin(), main_chain.end(), val);
+		std::cout << "inserting pend elem " << val << " at upper: " << *upper
+				  << std::endl;
+		main_chain.insert(upper, val);
+		pend.erase(pend.begin() + jacobsthal[i]);
 		printVectorName(main_chain, "main_chain");
 		printVectorName(pend, "pend");
 	}
