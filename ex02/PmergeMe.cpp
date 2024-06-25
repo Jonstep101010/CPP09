@@ -189,11 +189,6 @@ void PmergeMe::sortPairsByFirst() {
 }
 
 void PmergeMe::collectPairs() {
-	if (pairs[0].second < pairs[0].first && pairs.size() > 1) {
-		main_chain.push_back(pairs[0].second);
-		main_chain.push_back(pairs[0].first);
-		pairs.erase(pairs.begin());
-	}
 	for (size_t i = 0; i < pairs.size(); i++) {
 		main_chain.push_back(pairs[i].first);
 		pend.push_back(pairs[i].second);
@@ -228,14 +223,19 @@ static void assertMainSorted(std::vector<int> inputvec, int unpaired, size_t siz
 }
 
 void PmergeMe::insertionSortVector() {
-	// make use of jacobsthal
 	set_jacobsthal(pend.size());
 	for (size_t i = 0; !pend.empty(); i++) {
 		std::vector<int>::iterator upper
 			= std::upper_bound(main_chain.begin(), main_chain.end(),
 							   (i < jacobsthal.size() ? pend[jacobsthal[i]] : pend[0]));
-		main_chain.insert(upper, (i < jacobsthal.size() ? pend[jacobsthal[i]] : pend[0]));
-		pend.erase(pend.begin() + (i < jacobsthal.size() ? jacobsthal[i] : 0));
+		// prevent duplicate insertions
+		if (std::find(main_chain.begin(), main_chain.end(),
+					  (i < jacobsthal.size() ? pend[jacobsthal[i]] : pend[0]))
+			== main_chain.end()) {
+			main_chain.insert(upper,
+							  (i < jacobsthal.size() ? pend[jacobsthal[i]] : pend[0]));
+			pend.erase(pend.begin() + (i < jacobsthal.size() ? jacobsthal[i] : 0));
+		}
 		std::cout << "inserting pend elem " << pend[0] << " at upper: " << *upper
 				  << std::endl;
 		printVectorName(main_chain, "main_chain");
