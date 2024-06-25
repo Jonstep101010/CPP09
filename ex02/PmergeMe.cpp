@@ -207,12 +207,12 @@ void PmergeMe::insertionSort() {
 	// make use of jacobsthal
 	set_jacobsthal(pend.size());
 	std::vector<int>::iterator upper;
-	for (size_t i = 0; i < jacobsthal.size() && !pend.empty(); ++i) {
-		const int& val = pend.size() == 1 ? pend[0] : pend[jacobsthal[i]];
-		upper          = std::upper_bound(main_chain.begin(), main_chain.end(), val);
-		std::cout << "inserting pend elem " << val << " at upper: " << *upper
-				  << std::endl;
-		main_chain.insert(upper, val);
+	for (size_t i = 0; i < jacobsthal.size() && pend.size() > 1; ++i) {
+		upper
+			= std::upper_bound(main_chain.begin(), main_chain.end(), pend[jacobsthal[i]]);
+		std::cout << "inserting pend elem " << pend[jacobsthal[i]]
+				  << " at upper: " << *upper << std::endl;
+		main_chain.insert(upper, pend[jacobsthal[i]]);
 		pend.erase(pend.begin() + jacobsthal[i]);
 		printVectorName(main_chain, "main_chain");
 		printVectorName(pend, "pend");
