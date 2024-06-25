@@ -207,28 +207,20 @@ void PmergeMe::insertionSort() {
 	// make use of jacobsthal
 	set_jacobsthal(pend.size());
 	std::vector<int>::iterator upper;
-	for (size_t i = 0; i < jacobsthal.size() && pend.size() > 1; ++i) {
-		upper
-			= std::upper_bound(main_chain.begin(), main_chain.end(), pend[jacobsthal[i]]);
-		std::cout << "inserting pend elem " << pend[jacobsthal[i]]
-				  << " at upper: " << *upper << std::endl;
-		main_chain.insert(upper, pend[jacobsthal[i]]);
-		pend.erase(pend.begin() + jacobsthal[i]);
-		printVectorName(main_chain, "main_chain");
-		printVectorName(pend, "pend");
-	}
-	pend.erase(pend.begin());
+	size_t                     i = 0;
 	while (!pend.empty()) {
-		upper = std::upper_bound(main_chain.begin(), main_chain.end(), pend[0]);
+		if (i < jacobsthal.size() && pend.size() > 1) {
+			upper = std::upper_bound(main_chain.begin(), main_chain.end(),
+									 pend[jacobsthal[i]]);
+			main_chain.insert(upper, pend[jacobsthal[i]]);
+			pend.erase(pend.begin() + jacobsthal[i]);
+		} else {
+			upper = std::upper_bound(main_chain.begin(), main_chain.end(), pend[0]);
+			main_chain.insert(upper, pend[0]);
+			pend.erase(pend.begin() + pend[0]);
+		}
 		std::cout << "inserting pend elem " << pend[0] << " at upper: " << *upper
 				  << std::endl;
-		if (std::find(main_chain.begin(), main_chain.end(), pend[0])
-			!= main_chain.end()) {
-			std::cerr << "Error" << std::endl;
-			exit(1);
-		}
-		main_chain.insert(upper, pend[0]);
-		pend.erase(pend.begin());
 		printVectorName(main_chain, "main_chain");
 		printVectorName(pend, "pend");
 	}
