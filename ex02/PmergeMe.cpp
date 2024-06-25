@@ -234,10 +234,23 @@ void PmergeMe::insertionSort() {
 	}
 	// handle unpaired
 	if (size % 2 != 0) {
-		// @audit not working if last elem is greater than others
 		std::vector<int>::iterator upper
 			= std::upper_bound(main_chain.begin(), main_chain.end(), unpaired);
 		main_chain.insert(upper, unpaired);
+	}
+	// check if main_chain is sorted & no duplicates @audit remove
+	std::vector<int> sorted_chain = main_chain;
+	std::sort(sorted_chain.begin(), sorted_chain.end());
+	if (main_chain != sorted_chain) {
+		std::cerr << "Error" << std::endl;
+		exit(1);
+	}
+	for (std::vector<int>::iterator it = main_chain.begin(); it != main_chain.end();
+		 ++it) {
+		if (std::find(it + 1, main_chain.end(), *it) != main_chain.end()) {
+			std::cerr << "Error" << std::endl;
+			exit(1);
+		}
 	}
 }
 
