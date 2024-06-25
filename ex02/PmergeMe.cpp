@@ -206,18 +206,12 @@ void PmergeMe::collectPairs() {
 void PmergeMe::insertionSort() {
 	// make use of jacobsthal
 	set_jacobsthal(pend.size());
-	std::vector<int>::iterator upper;
-	size_t                     i = 0;
-	while (!pend.empty()) {
-		upper = std::upper_bound(
-			main_chain.begin(), main_chain.end(),
-			(i < jacobsthal.size() && pend.size() > 1 ? pend[jacobsthal[i]] : pend[0]));
-		main_chain.insert(
-			upper,
-			(i < jacobsthal.size() && pend.size() > 1 ? pend[jacobsthal[i]] : pend[0]));
-		pend.erase(
-			pend.begin()
-			+ (i < jacobsthal.size() && pend.size() > 1 ? jacobsthal[i] : pend[0]));
+	for (size_t i = 0; !pend.empty(); i++) {
+		std::vector<int>::iterator upper
+			= std::upper_bound(main_chain.begin(), main_chain.end(),
+							   (i < jacobsthal.size() ? pend[jacobsthal[i]] : pend[0]));
+		main_chain.insert(upper, (i < jacobsthal.size() ? pend[jacobsthal[i]] : pend[0]));
+		pend.erase(pend.begin() + (i < jacobsthal.size() ? jacobsthal[i] : 0));
 		std::cout << "inserting pend elem " << pend[0] << " at upper: " << *upper
 				  << std::endl;
 		printVectorName(main_chain, "main_chain");
@@ -232,7 +226,7 @@ void PmergeMe::insertionSort() {
 	// check if main_chain is sorted & no duplicates @audit remove
 	std::vector<int> sorted_chain = main_chain;
 	std::sort(sorted_chain.begin(), sorted_chain.end());
-	if (main_chain != sorted_chain) {
+	if (main_chain != sorted_chain || !pend.empty()) {
 		std::cerr << "Error" << std::endl;
 		exit(1);
 	}
