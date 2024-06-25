@@ -217,6 +217,21 @@ void PmergeMe::insertionSort() {
 		printVectorName(main_chain, "main_chain");
 		printVectorName(pend, "pend");
 	}
+	pend.erase(pend.begin());
+	while (!pend.empty()) {
+		upper = std::upper_bound(main_chain.begin(), main_chain.end(), pend[0]);
+		std::cout << "inserting pend elem " << pend[0] << " at upper: " << *upper
+				  << std::endl;
+		if (std::find(main_chain.begin(), main_chain.end(), pend[0])
+			!= main_chain.end()) {
+			std::cerr << "Error" << std::endl;
+			exit(1);
+		}
+		main_chain.insert(upper, pend[0]);
+		pend.erase(pend.begin());
+		printVectorName(main_chain, "main_chain");
+		printVectorName(pend, "pend");
+	}
 	// handle unpaired
 	if (size % 2 != 0) {
 		// @audit not working if last elem is greater than others
