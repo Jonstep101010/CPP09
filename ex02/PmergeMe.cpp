@@ -83,6 +83,12 @@ static void printVector(std::vector<int> const& vec) {
 	std::cout << std::endl;
 }
 
+static void printVectorName(std::vector<int> const& vec, std::string vecname) {
+	std::cout << vecname << ": [ ";
+	std::copy(vec.begin(), vec.end(), std::ostream_iterator<int>(std::cout, " "));
+	std::cout << "]" << std::endl;
+}
+
 // clang-format off
 static void printPairsVec(std::vector<std::pair<int, int> > const& vec) {
 	std::cout << "Pairs: ";
@@ -187,22 +193,11 @@ void PmergeMe::collectPairs() {
 	}
 	for (size_t i = 0; i < pairs.size(); i++) {
 		main_chain.push_back(pairs[i].first);
-	}
-	for (size_t i = 0; i < pairs.size(); i++) {
 		pend.push_back(pairs[i].second);
 	}
 	// print main_chain and pend
-	std::cout << "main_chain: [";
-	for (std::vector<int>::iterator it = main_chain.begin(); it != main_chain.end();
-		 ++it) {
-		std::cout << *it << " ";
-	}
-	std::cout << "]" << std::endl;
-	std::cout << "pend: [";
-	for (std::vector<int>::iterator it = pend.begin(); it != pend.end(); ++it) {
-		std::cout << *it << " ";
-	}
-	std::cout << "]" << std::endl;
+	printVectorName(main_chain, "main_chain");
+	printVectorName(pend, "pend");
 }
 
 void PmergeMe::insertionSort() {
@@ -224,8 +219,8 @@ void PmergeMe::insertionSort() {
 			main_chain.insert(upper, tmp);
 			pend.erase(pend.begin());
 		}
-		printVector(pend);
-		printVector(main_chain);
+		printVectorName(main_chain, "main_chain");
+		printVectorName(pend, "pend");
 	}
 	// handle unpaired
 	if (size % 2 != 0) {
