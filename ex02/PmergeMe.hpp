@@ -53,6 +53,7 @@ private:
 	void insertionSort();
 
 	// clang-format off
-	std::vector<std::pair<int, int> >::iterator findLargest(std::vector<std::pair<int, int> >::iterator exclude);
+	std::vector<std::pair<int, int> >::iterator findLargest_range(std::vector<std::pair<int, int> >::iterator start, std::vector<std::pair<int, int> >::iterator end);
+	std::vector<std::pair<int, int> >::iterator findSmallest_range(std::vector<std::pair<int, int> >::iterator start, std::vector<std::pair<int, int> >::iterator end);
 	// clang-format on
 };
