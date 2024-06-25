@@ -105,7 +105,6 @@ void PmergeMe::createPairs() {
 	for (size_t i = 0; i < numbers_vec.size(); i += 2) {
 		pairs.push_back(std::make_pair(numbers_vec[i], numbers_vec[i + 1]));
 	}
-	std::cout << "Pairs: ";
 	printPairsVec(pairs);
 }
 
@@ -118,7 +117,7 @@ void PmergeMe::unsortEachPair() {
 			std::swap(it->first, it->second);
 		}
 	}
-	std::cout << "Unsorted: ";
+	std::cout << "Unsorted ";
 	printPairsVec(pairs);
 }
 
@@ -132,7 +131,7 @@ std::vector<std::pair<int, int> >::iterator PmergeMe::findLargest_range(std::vec
 			largest = it;
 		}
 	}
-	std::cout << "RangeLargest: " << largest->first << std::endl;
+	// std::cout << "RangeLargest: " << largest->first << std::endl;
 	return largest;
 }
 // clang-format off
@@ -145,7 +144,7 @@ std::vector<std::pair<int, int> >::iterator PmergeMe::findSmallest_range(std::ve
 			smallest = it;
 		}
 	}
-	std::cout << "RangeSmallest: " << smallest->first << std::endl;
+	// std::cout << "RangeSmallest: " << smallest->first << std::endl;
 	return smallest;
 }
 
