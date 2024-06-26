@@ -26,8 +26,10 @@ private:
 	int    unpaired;
 
 	clock_t start;
-	clock_t end;
 	char**  argv;
+
+	double timeElapsedVec;
+	double timeElapsedDeq;
 
 	/// VECTOR ///
 	// heap-array (contiguous memory)

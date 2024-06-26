@@ -9,15 +9,15 @@
 */
 
 PmergeMe::PmergeMe()
-	: size(0), unpaired(0), start(), end(), argv() {}
+	: size(0), unpaired(0), start(), argv(), timeElapsedVec(0), timeElapsedDeq(0) {}
 
 PmergeMe::PmergeMe(const PmergeMe& src)
-	: size(0), unpaired(0), start(), end(), argv() {
+	: size(0), unpaired(0), start(), argv(), timeElapsedVec(0), timeElapsedDeq(0) {
 	*this = src;
 }
 
 PmergeMe::PmergeMe(char** argv)
-	: size(0), unpaired(0), start(), end(), argv(argv) {}
+	: size(0), unpaired(0), start(), argv(argv), timeElapsedVec(0), timeElapsedDeq(0) {}
 
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
@@ -41,28 +41,31 @@ PmergeMe& PmergeMe::operator=(PmergeMe const& rhs) {
 */
 
 // check if main_vec is sorted & no duplicates @audit remove
-// static void assertMainSorted(std::vector<int> inputvec, int unpaired, size_t size,
-// 							 std::vector<int> main_vec) {
-// 	if (size % 2 != 0) {
-// 		inputvec.push_back(unpaired);
-// 	}
-// 	std::vector<int> sorted_chain = inputvec;
-// 	std::sort(sorted_chain.begin(), sorted_chain.end());
-// 	if (main_vec != sorted_chain) {
-// 		std::cerr << "Error\nSorted != main\nsorted_chain:\n";
-// 		printContainer(sorted_chain);
-// 		std::cerr << "main_vec\n";
-// 		printContainer(main_vec);
-// 		exit(1);
-// 	}
-// 	for (std::vector<int>::iterator it = main_vec.begin(); it != main_vec.end();
-// 		 ++it) {
-// 		if (std::find(it + 1, main_vec.end(), *it) != main_vec.end()) {
-// 			std::cerr << "Error" << std::endl;
-// 			exit(1);
-// 		}
-// 	}
-// }
+static void assertMainSortedVec(std::vector<int> inputvec, int unpaired, size_t size,
+								std::vector<int> main_vec) {
+	if (size % 2 != 0) {
+		inputvec.push_back(unpaired);
+	}
+	std::vector<int> sorted_chain = inputvec;
+	std::sort(sorted_chain.begin(), sorted_chain.end());
+	if (main_vec != sorted_chain) {
+		std::cerr << "Error\nSorted != main\nsorted_chain:\n";
+		std::copy(sorted_chain.begin(), sorted_chain.end(),
+				  std::ostream_iterator<int>(std::cout, " "));
+		std::cout << std::endl;
+		std::cerr << "main_vec\n";
+		std::copy(main_vec.begin(), main_vec.end(),
+				  std::ostream_iterator<int>(std::cout, " "));
+		std::cout << std::endl;
+		exit(1);
+	}
+	for (std::vector<int>::iterator it = main_vec.begin(); it != main_vec.end(); ++it) {
+		if (std::find(it + 1, main_vec.end(), *it) != main_vec.end()) {
+			std::cerr << "Error" << std::endl;
+			exit(1);
+		}
+	}
+}
 
 void PmergeMe::debugPrintSortVec(size_t i) {
 	std::cout << "jac: " << jthal_vec[i] << std::endl;
@@ -95,7 +98,7 @@ void PmergeMe::insertionSortVector() {
 		upper = std::upper_bound(main_vec.begin(), main_vec.end(), unpaired);
 		main_vec.insert(upper, unpaired);
 	}
-	// assertMainSorted(numbers_vec, unpaired, size, main_vec);
+	assertMainSortedVec(numbers_vec, unpaired, size, main_vec);
 }
 
 void PmergeMe::insertionSortDeque() {
@@ -103,13 +106,13 @@ void PmergeMe::insertionSortDeque() {
 }
 
 void PmergeMe::sort() {
+	// requires parsed input @audit
+	// start timer 1
+	start = clock();
 	get_input(numbers_vec);
-	// requires parsed input
 	// Print before
 	std::cout << "Before: ";
 	printContainer(numbers_vec);
-	// start timer 1
-	start = clock();
 	createPairs(numbers_vec, pairs_vec);
 	unsortEachPair(pairs_vec);
 	sortPairsByFirst(pairs_vec);
@@ -120,18 +123,31 @@ void PmergeMe::sort() {
 	// Sort 1
 	insertionSortVector();
 	// end timer 1
-	end = clock();
-	std::cout << "Time to process : " << ((double)(end - start) / (CLOCKS_PER_SEC / 1000))
-			  << "ms\n";
+	timeElapsedVec = ((double)(clock() - start) / (CLOCKS_PER_SEC));
+
 	// start timer 2
+	start = clock();
+	get_input(numbers_deq);
+	createPairs(numbers_deq, pairs_deq);
+	unsortEachPair(pairs_deq);
+	sortPairsByFirst(pairs_deq);
+	// clang-format off
+	collectPairs<std::deque<int> >(pairs_deq, main_deq, pend_deq);
+	// clang-format on
 	// Sort 2
 	insertionSortDeque();
 	// end timer 2
+	timeElapsedDeq = ((double)(clock() - start) / (CLOCKS_PER_SEC));
 	// Print after
-	std::cout << "After: ";
-	printContainer(main_vec);
+	std::cout << "After: \n";
+	printContainerName(main_deq, "DEQUE");
+	printContainerName(main_vec, "VECTOR");
 	// Print time 1
+	std::cout << "Time to process a range of " << size
+			  << " elements with std::vector : " << timeElapsedVec << std::endl;
 	// Print time 2
+	std::cout << "Time to process a range of " << size
+			  << " elements with std::deque : " << timeElapsedDeq << std::endl;
 }
 
 /*
