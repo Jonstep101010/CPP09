@@ -53,6 +53,8 @@ private:
 	void insertionSortVector();
 	void insertionSortDeque();
 
+	void debugPrintSortVec(size_t i);
+
 	// clang-format off
 	std::vector<std::pair<int, int> >::iterator findLargest_range(std::vector<std::pair<int, int> >::iterator start, std::vector<std::pair<int, int> >::iterator end);
 	std::vector<std::pair<int, int> >::iterator findSmallest_range(std::vector<std::pair<int, int> >::iterator start, std::vector<std::pair<int, int> >::iterator end);

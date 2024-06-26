@@ -65,6 +65,7 @@ void PmergeMe::set_jacobsthal(size_t size) {
 			int nextNumber = jacobsthal[i - 1] + 2 * jacobsthal[i - 2];
 			jacobsthal.push_back(nextNumber);
 		}
+		jacobsthal.erase(jacobsthal.begin() + 1);
 	} else {
 		jacobsthal.push_back(0);
 	}
@@ -222,29 +223,33 @@ static void assertMainSorted(std::vector<int> inputvec, int unpaired, size_t siz
 	}
 }
 
+void PmergeMe::debugPrintSortVec(size_t i) {
+	std::cout << "jac: " << jacobsthal[i] << std::endl;
+	std::cout << "val: " << (i < jacobsthal.size() - 1 ? pend[jacobsthal[i]] : pend[0])
+			  << std::endl;
+	std::vector<int>::iterator upper
+		= std::upper_bound(main_chain.begin(), main_chain.end(),
+						   (i < jacobsthal.size() - 1 ? pend[jacobsthal[i]] : pend[0]));
+	std::cout << "inserting pend elem "
+			  << (i < jacobsthal.size() - 1 ? pend[jacobsthal[i]] : pend[0])
+			  << " at upper: " << *upper << std::endl;
+}
+
 void PmergeMe::insertionSortVector() {
 	set_jacobsthal(pend.size());
+	std::vector<int>::iterator upper;
 	for (size_t i = 0; !pend.empty(); i++) {
-		std::vector<int>::iterator upper
-			= std::upper_bound(main_chain.begin(), main_chain.end(),
-							   (i < jacobsthal.size() ? pend[jacobsthal[i]] : pend[0]));
-		// prevent duplicate insertions
-		if (std::find(main_chain.begin(), main_chain.end(),
-					  (i < jacobsthal.size() ? pend[jacobsthal[i]] : pend[0]))
-			== main_chain.end()) {
-			main_chain.insert(upper,
-							  (i < jacobsthal.size() ? pend[jacobsthal[i]] : pend[0]));
-			pend.erase(pend.begin() + (i < jacobsthal.size() ? jacobsthal[i] : 0));
-		}
-		std::cout << "inserting pend elem " << pend[0] << " at upper: " << *upper
-				  << std::endl;
+		const int& val = (i < jacobsthal.size() - 1 ? pend[jacobsthal[i]] : pend[0]);
+		upper          = std::upper_bound(main_chain.begin(), main_chain.end(), val);
+		debugPrintSortVec(i);
+		main_chain.insert(upper, val);
+		pend.erase(pend.begin() + (i < jacobsthal.size() - 1 ? jacobsthal[i] : 0));
 		printVectorName(main_chain, "main_chain");
 		printVectorName(pend, "pend");
 	}
 	// handle unpaired
 	if (size % 2 != 0) {
-		std::vector<int>::iterator upper
-			= std::upper_bound(main_chain.begin(), main_chain.end(), unpaired);
+		upper = std::upper_bound(main_chain.begin(), main_chain.end(), unpaired);
 		main_chain.insert(upper, unpaired);
 	}
 	assertMainSorted(numbers_vec, unpaired, size, main_chain);
