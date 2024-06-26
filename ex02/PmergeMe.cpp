@@ -132,7 +132,24 @@ void PmergeMe::insertionSortDeque() {
 		main_deq.insert(upper, unpaired);
 	}
 	assertMainSortedDeq(numbers_deq, unpaired, size, main_deq);
-	// @todo implement insertion sort for deque
+}
+
+#include <fstream>
+#define ERROR(x) std::cerr << "\033[1;31m" << x << "\033[0m"
+#define OK(x) std::cout << "\033[1;32m" << x << "\033[0m"
+void PmergeMe::compare_sorted() {
+	// swap stdout to outfiles for diff
+	std::ofstream outdeq("outdeq.txt");
+	for (std::deque<int>::iterator it = main_deq.begin(); it != main_deq.end(); ++it) {
+		outdeq << *it << " ";
+	}
+	outdeq.close();
+	std::ofstream outvec("outvec.txt", std::ios::out);
+	for (std::vector<int>::iterator it = main_vec.begin(); it != main_vec.end(); ++it) {
+		outvec << *it << " ";
+	}
+	outvec.close();
+	system("diff -s outdeq.txt outvec.txt") ? ERROR("Error\n") : OK("[OK]\n");
 }
 
 void PmergeMe::sort() {
@@ -178,6 +195,7 @@ void PmergeMe::sort() {
 	// Print time 2
 	std::cout << "Time to process a range of " << size
 			  << " elements with std::deque : " << timeElapsedDeq << std::endl;
+	compare_sorted(); // @audit remove
 }
 
 /*

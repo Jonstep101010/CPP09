@@ -59,7 +59,7 @@ private:
 	void insertionSortVector();
 	void insertionSortDeque();
 
-	void debugPrintSortVec(size_t i);
+	void compare_sorted();
 
 	/* -------------------------------- Templates ------------------------------- */
 	template <typename Container> void printContainer(Container& c);
