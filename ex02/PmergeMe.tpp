@@ -1,4 +1,6 @@
 #pragma once
+#include "PmergeMe.hpp"
+#include <algorithm>
 #include <cstdlib>
 #include <iostream>
 #include <iterator>
@@ -44,21 +46,22 @@ void PmergeMe::set_jacobsthal(size_t size, Container& jacobsthal) {
 }
 
 #include "PmergeMe.hpp"
-template <typename Container> void PmergeMe::get_input(Container& numbers_container) {
+template <typename Container> void PmergeMe::get_input(Container& numbers) {
 	if (!argv) {
 		throw Error();
 	}
 	for (int i = 1; argv[i]; i++) {
-		std::string str(argv[i]);
+		const std::string str(argv[i]);
 		if (str.find_first_not_of("0123456789") != std::string::npos) {
 			std::cerr << "Error" << std::endl;
 			exit(1);
 		}
-		int num = std::atoi((const char*)argv[i]);
-		// we only check the vector for duplicates (same data, array access is faster)
-		onlyUniqueVec(num);
+		const int num = std::atoi((const char*)argv[i]);
+		if (std::find(numbers.begin(), numbers.end(), num) != numbers.end()) {
+			throw Error();
+		}
 		// push to numbers container
-		numbers_container.push_back(num);
+		numbers.push_back(num);
 	}
-	size = numbers_container.size();
+	size = numbers.size();
 }

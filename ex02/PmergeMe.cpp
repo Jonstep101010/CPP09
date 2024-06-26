@@ -40,16 +40,6 @@ PmergeMe& PmergeMe::operator=(PmergeMe const& rhs) {
 ** --------------------------------- METHODS ----------------------------------
 */
 
-/**
- * @brief check for duplicates to prevent issues in sorting
- */
-void PmergeMe::onlyUniqueVec(int num) {
-	if (std::find(numbers_vec.begin(), numbers_vec.end(), num) != numbers_vec.end()) {
-		std::cerr << "Error" << std::endl;
-		exit(1);
-	}
-}
-
 void PmergeMe::createPairs() {
 	if (numbers_vec.size() % 2 != 0) {
 		unpaired = numbers_vec.back();

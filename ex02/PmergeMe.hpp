@@ -76,5 +76,5 @@ private:
 
 	template <typename Container> void set_jacobsthal(size_t size, Container& jacobsthal);
 
-	template <typename Container> void get_input(Container& numbers_container);
+	template <typename Container> void get_input(Container& numbers);
 };
