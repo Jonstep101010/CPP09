@@ -19,10 +19,7 @@ void PmergeMe::printContainerName(Container& c, std::string name) {
 
 template <typename PairsContainer> void PmergeMe::printContainerPairs(PairsContainer& c) {
 	std::cout << "Pairs: ";
-	// clang-format off
-		for (typename PairsContainer::const_iterator it = c.begin();
-		 // clang-format on
-		 it != c.end(); ++it) {
+	for (typename PairsContainer::const_iterator it = c.begin(); it != c.end(); ++it) {
 		std::cout << "[" << it->first << " " << it->second << "] ";
 	}
 	std::cout << std::endl;
@@ -81,14 +78,30 @@ void PmergeMe::createPairs(Container& numbers, PairsContainer& pairs) {
 }
 
 template <typename PairsContainer> void PmergeMe::unsortEachPair(PairsContainer& pairs) {
-	// clang-format off
-	for (typename PairsContainer::iterator it = pairs.begin();
-	// clang-format on	
-		 it != pairs.end(); ++it) {
+	for (typename PairsContainer::iterator it = pairs.begin(); it != pairs.end(); ++it) {
 		if (it->first < it->second) {
 			std::swap(it->first, it->second);
 		}
 	}
 	std::cout << "Unsorted ";
+	printContainerPairs(pairs);
+}
+
+template <typename PairsContainer>
+void PmergeMe::sortPairsByFirst(PairsContainer& pairs) {
+	typename PairsContainer::iterator largest
+		= findLargest_range(pairs.begin(), pairs.end());
+	for (typename PairsContainer::iterator it = pairs.end() - 1; it != pairs.begin();
+		 --it) {
+		largest = findLargest_range(pairs.begin(), it);
+		std::swap(*it, *largest);
+	}
+	typename PairsContainer::iterator smallest
+		= findSmallest_range(pairs.begin(), pairs.end());
+	for (typename PairsContainer::iterator it = pairs.begin(); it != pairs.end(); ++it) {
+		smallest = findSmallest_range(it, pairs.end());
+		std::swap(*it, *smallest);
+	}
+	std::cout << "Sorted ";
 	printContainerPairs(pairs);
 }

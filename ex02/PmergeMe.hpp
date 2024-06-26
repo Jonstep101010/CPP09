@@ -54,8 +54,6 @@ private:
 
 	/* --------------------------------- METHODS ---------------------------------- */
 
-	void onlyUniqueVec(int num);
-	void sortPairsByFirst();
 	void collectPairs();
 	void insertionSortVector();
 	void insertionSortDeque();
@@ -79,6 +77,7 @@ private:
 	/// PAIRS OPS ///
 	template <typename Container, typename PairsContainer>
 	void createPairs(Container& numbers, PairsContainer& pairs);
-	template <typename PairsContainer>
-	void unsortEachPair(PairsContainer& pairs);
+	template <typename PairsContainer> void unsortEachPair(PairsContainer& pairs);
+
+	template <typename PairsContainer> void sortPairsByFirst(PairsContainer& pairs);
 };

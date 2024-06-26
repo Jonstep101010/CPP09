@@ -67,37 +67,6 @@ std::vector<std::pair<int, int> >::iterator PmergeMe::findSmallest_range(std::ve
 	return smallest;
 }
 
-void PmergeMe::sortPairsByFirst() {
-	size_t sizeloc = pairs_vec.size();
-	// start from end
-
-	// clang-format off
-	std::vector<std::pair<int, int> >::iterator largest = findLargest_range(pairs_vec.begin(), pairs_vec.end());
-	for (std::vector<std::pair<int, int> >::iterator it = pairs_vec.end() - 1;
-		 // clang-format on
-		 it != pairs_vec.begin(); --it) {
-		largest = findLargest_range(pairs_vec.begin(), it);
-		std::swap(*it, *largest);
-	}
-	// prevent skipping first element
-	// clang-format off
-	std::vector<std::pair<int, int> >::iterator smallest = findSmallest_range(pairs_vec.begin(), pairs_vec.end());
-	for (std::vector<std::pair<int, int> >::iterator it = pairs_vec.begin();
-		 // clang-format on
-		 it != pairs_vec.end(); ++it) {
-		smallest = findSmallest_range(it, pairs_vec.end());
-		std::swap(*it, *smallest);
-	}
-
-	if (sizeloc != pairs_vec.size()) {
-		std::cerr << "sortPairsByFirst panicked!" << std::endl;
-		abort();
-	}
-
-	std::cout << "Sorted ";
-	printContainerPairs(pairs_vec);
-}
-
 void PmergeMe::collectPairs() {
 	for (size_t i = 0; i < pairs_vec.size(); i++) {
 		main_vec.push_back(pairs_vec[i].first);
@@ -180,7 +149,7 @@ void PmergeMe::sort() {
 	start = clock();
 	createPairs(numbers_vec, pairs_vec);
 	unsortEachPair(pairs_vec);
-	sortPairsByFirst();
+	sortPairsByFirst(pairs_vec);
 	collectPairs();
 
 	// Sort 1
