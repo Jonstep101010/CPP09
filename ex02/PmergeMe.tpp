@@ -65,3 +65,30 @@ template <typename Container> void PmergeMe::get_input(Container& numbers) {
 	}
 	size = numbers.size();
 }
+
+template <typename Container, typename PairsContainer>
+void PmergeMe::createPairs(Container& numbers, PairsContainer& pairs) {
+	if (numbers.size() % 2 != 0) {
+		unpaired = numbers.back();
+		numbers.pop_back();
+		std::cout << "Unpaired: " << unpaired << std::endl;
+	}
+	// group into size / 2 pairs
+	for (size_t i = 0; i < numbers.size(); i += 2) {
+		pairs.push_back(std::make_pair(numbers[i], numbers[i + 1]));
+	}
+	printContainerPairs(pairs);
+}
+
+template <typename PairsContainer> void PmergeMe::unsortEachPair(PairsContainer& pairs) {
+	// clang-format off
+	for (typename PairsContainer::iterator it = pairs.begin();
+	// clang-format on	
+		 it != pairs.end(); ++it) {
+		if (it->first < it->second) {
+			std::swap(it->first, it->second);
+		}
+	}
+	std::cout << "Unsorted ";
+	printContainerPairs(pairs);
+}

@@ -40,33 +40,6 @@ PmergeMe& PmergeMe::operator=(PmergeMe const& rhs) {
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void PmergeMe::createPairs() {
-	if (numbers_vec.size() % 2 != 0) {
-		unpaired = numbers_vec.back();
-		numbers_vec.pop_back();
-		numbers_deq.pop_back();
-		std::cout << "Unpaired: " << unpaired << std::endl;
-	}
-	// group into size / 2 pairs
-	for (size_t i = 0; i < numbers_vec.size(); i += 2) {
-		pairs_vec.push_back(std::make_pair(numbers_vec[i], numbers_vec[i + 1]));
-	}
-	printContainerPairs(pairs_vec);
-}
-
-void PmergeMe::unsortEachPair() {
-	// clang-format off
-	for (std::vector<std::pair<int, int> >::iterator it = pairs_vec.begin();
-	// clang-format on	
-		 it != pairs_vec.end(); ++it) {
-		if (it->first < it->second) {
-			std::swap(it->first, it->second);
-		}
-	}
-	std::cout << "Unsorted ";
-	printContainerPairs(pairs_vec);
-}
-
 // clang-format off
 std::vector<std::pair<int, int> >::iterator PmergeMe::findLargest_range(std::vector<std::pair<int, int> >::iterator start, std::vector<std::pair<int, int> >::iterator end) {
 	std::vector<std::pair<int, int> >::iterator largest = start;
@@ -205,8 +178,8 @@ void PmergeMe::sort() {
 	printContainer(numbers_vec);
 	// start timer 1
 	start = clock();
-	createPairs();
-	unsortEachPair();
+	createPairs(numbers_vec, pairs_vec);
+	unsortEachPair(pairs_vec);
 	sortPairsByFirst();
 	collectPairs();
 

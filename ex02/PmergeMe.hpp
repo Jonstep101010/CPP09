@@ -55,8 +55,6 @@ private:
 	/* --------------------------------- METHODS ---------------------------------- */
 
 	void onlyUniqueVec(int num);
-	void createPairs();
-	void unsortEachPair();
 	void sortPairsByFirst();
 	void collectPairs();
 	void insertionSortVector();
@@ -77,4 +75,10 @@ private:
 	template <typename Container> void set_jacobsthal(size_t size, Container& jacobsthal);
 
 	template <typename Container> void get_input(Container& numbers);
+
+	/// PAIRS OPS ///
+	template <typename Container, typename PairsContainer>
+	void createPairs(Container& numbers, PairsContainer& pairs);
+	template <typename PairsContainer>
+	void unsortEachPair(PairsContainer& pairs);
 };
