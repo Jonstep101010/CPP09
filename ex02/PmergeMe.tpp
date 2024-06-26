@@ -90,16 +90,16 @@ template <typename PairsContainer> void PmergeMe::unsortEachPair(PairsContainer&
 template <typename PairsContainer>
 void PmergeMe::sortPairsByFirst(PairsContainer& pairs) {
 	typename PairsContainer::iterator largest
-		= findLargest_range(pairs.begin(), pairs.end());
+		= findLargest_range<PairsContainer>(pairs.begin(), pairs.end());
 	for (typename PairsContainer::iterator it = pairs.end() - 1; it != pairs.begin();
 		 --it) {
-		largest = findLargest_range(pairs.begin(), it);
+		largest = findLargest_range<PairsContainer>(pairs.begin(), it);
 		std::swap(*it, *largest);
 	}
 	typename PairsContainer::iterator smallest
-		= findSmallest_range(pairs.begin(), pairs.end());
+		= findSmallest_range<PairsContainer>(pairs.begin(), pairs.end());
 	for (typename PairsContainer::iterator it = pairs.begin(); it != pairs.end(); ++it) {
-		smallest = findSmallest_range(it, pairs.end());
+		smallest = findSmallest_range<PairsContainer>(it, pairs.end());
 		std::swap(*it, *smallest);
 	}
 	std::cout << "Sorted ";
@@ -115,4 +115,30 @@ void PmergeMe::collectPairs(PairsContainer& pairs, Container& main, Container& p
 	// print main & pend
 	printContainerName(main, "main");
 	printContainerName(pend, "pend");
+}
+
+template <typename PairsContainer>
+typename PairsContainer::iterator
+PmergeMe::findLargest_range(typename PairsContainer::iterator start,
+							typename PairsContainer::iterator end) {
+	typename PairsContainer::iterator largest = start;
+	for (typename PairsContainer::iterator it = start; it != end; ++it) {
+		if (it->first > largest->first) {
+			largest = it;
+		}
+	}
+	return largest;
+}
+
+template <typename PairsContainer>
+typename PairsContainer::iterator
+PmergeMe::findSmallest_range(typename PairsContainer::iterator start,
+							 typename PairsContainer::iterator end) {
+	typename PairsContainer::iterator smallest = start;
+	for (typename PairsContainer::iterator it = start; it != end; ++it) {
+		if (it->first < smallest->first) {
+			smallest = it;
+		}
+	}
+	return smallest;
 }

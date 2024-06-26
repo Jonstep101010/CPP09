@@ -40,33 +40,6 @@ PmergeMe& PmergeMe::operator=(PmergeMe const& rhs) {
 ** --------------------------------- METHODS ----------------------------------
 */
 
-// clang-format off
-std::vector<std::pair<int, int> >::iterator PmergeMe::findLargest_range(std::vector<std::pair<int, int> >::iterator start, std::vector<std::pair<int, int> >::iterator end) {
-	std::vector<std::pair<int, int> >::iterator largest = start;
-	for (std::vector<std::pair<int, int> >::iterator it = start;
-		 // clang-format on
-		 it != end; ++it) {
-		if (it->first > largest->first) {
-			largest = it;
-		}
-	}
-	// std::cout << "RangeLargest: " << largest->first << std::endl;
-	return largest;
-}
-// clang-format off
-std::vector<std::pair<int, int> >::iterator PmergeMe::findSmallest_range(std::vector<std::pair<int, int> >::iterator start, std::vector<std::pair<int, int> >::iterator end) {
-	std::vector<std::pair<int, int> >::iterator smallest = start;
-	for (std::vector<std::pair<int, int> >::iterator it = start;
-		 // clang-format on
-		 it != end; ++it) {
-		if (it->first < smallest->first) {
-			smallest = it;
-		}
-	}
-	// std::cout << "RangeSmallest: " << smallest->first << std::endl;
-	return smallest;
-}
-
 // check if main_vec is sorted & no duplicates @audit remove
 // static void assertMainSorted(std::vector<int> inputvec, int unpaired, size_t size,
 // 							 std::vector<int> main_vec) {
@@ -140,7 +113,7 @@ void PmergeMe::sort() {
 	createPairs(numbers_vec, pairs_vec);
 	unsortEachPair(pairs_vec);
 	sortPairsByFirst(pairs_vec);
-	collectPairs(pairs_vec, main_vec, pend_vec);
+	collectPairs<std::vector<int> >(pairs_vec, main_vec, pend_vec);
 
 	// Sort 1
 	insertionSortVector();

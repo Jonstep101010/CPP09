@@ -59,11 +59,6 @@ private:
 
 	void debugPrintSortVec(size_t i);
 
-	// clang-format off
-	std::vector<std::pair<int, int> >::iterator findLargest_range(std::vector<std::pair<int, int> >::iterator start, std::vector<std::pair<int, int> >::iterator end);
-	std::vector<std::pair<int, int> >::iterator findSmallest_range(std::vector<std::pair<int, int> >::iterator start, std::vector<std::pair<int, int> >::iterator end);
-	// clang-format on
-
 	/* -------------------------------- Templates ------------------------------- */
 	template <typename Container> void printContainer(Container& c);
 	template <typename Container> void printContainerName(Container& c, std::string name);
@@ -82,4 +77,13 @@ private:
 
 	template <typename Container, typename PairsContainer>
 	void collectPairs(PairsContainer& pairs, Container& main, Container& pend);
+
+	template <typename PairsContainer>
+	typename PairsContainer::iterator
+	findLargest_range(typename PairsContainer::iterator start,
+					  typename PairsContainer::iterator end);
+	template <typename PairsContainer>
+	typename PairsContainer::iterator
+	findSmallest_range(typename PairsContainer::iterator start,
+					   typename PairsContainer::iterator end);
 };
