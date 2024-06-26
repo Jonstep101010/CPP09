@@ -23,32 +23,36 @@ public:
 
 private:
 	size_t size;
-	// heap-array (contiguous memory)
-	// insertions/deletions at beginning/middle slower than deque (re-allocation, copying)
-	std::vector<int> numbers_vec;
-	std::vector<int> jthal_vec;
-	// double ended queue (non-contiguous memory)
-	// indexing slower than vector, but faster insertion/deletion at ends
-	std::deque<int> numbers_deq;
+	int    unpaired;
 
 	clock_t start;
 	clock_t end;
+	char**  argv;
 
-	// bool	is_odd; indicated by size
-	// size_t size;
-	int unpaired;
-
+	/// VECTOR ///
+	// heap-array (contiguous memory)
+	// insertions/deletions at beginning/middle slower than deque (re-allocation, copying)
+	std::vector<int> numbers_vec;
 	// clang-format off
-	std::vector<std::pair<int, int> > pairs;
+	std::vector<std::pair<int, int> > pairs_vec;
 	// clang-format on
-	std::vector<int> main_chain;
-	std::vector<int> pend;
+	std::vector<int> main_vec;
+	std::vector<int> pend_vec;
+	std::vector<int> jthal_vec;
 
-	std::vector<int> jacobsthal;
+	/// DEQUE ///
+	// double ended queue (non-contiguous memory)
+	// indexing slower than vector, but faster insertion/deletion at ends
+	std::deque<int> numbers_deq;
+	// clang-format off
+	std::deque<std::pair<int, int> > pairs_deq;
+	// clang-format on
 
-	void set_jacobsthal(size_t size);
+	std::deque<int> main_deq;
+	std::deque<int> pend_deq;
+	std::deque<int> jthal_deq;
 
-	// @follow-up use std::pair for sorting?
+	/* --------------------------------- METHODS ---------------------------------- */
 
 	void onlyUniqueVec(int num);
 	void createPairs();
@@ -69,5 +73,8 @@ private:
 	template <typename Container> void printContainer(Container& c);
 	template <typename Container> void printContainerName(Container& c, std::string name);
 	template <typename PairsContainer> void printContainerPairs(PairsContainer& c);
+
 	template <typename Container> void set_jacobsthal(size_t size, Container& jacobsthal);
+
+	template <typename Container> void get_input(Container& numbers_container);
 };

@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdlib>
 #include <iostream>
 #include <iterator>
 
@@ -42,3 +43,22 @@ void PmergeMe::set_jacobsthal(size_t size, Container& jacobsthal) {
 	printContainerName(jacobsthal, "Jacobsthal");
 }
 
+#include "PmergeMe.hpp"
+template <typename Container> void PmergeMe::get_input(Container& numbers_container) {
+	if (!argv) {
+		throw Error();
+	}
+	for (int i = 1; argv[i]; i++) {
+		std::string str(argv[i]);
+		if (str.find_first_not_of("0123456789") != std::string::npos) {
+			std::cerr << "Error" << std::endl;
+			exit(1);
+		}
+		int num = std::atoi((const char*)argv[i]);
+		// we only check the vector for duplicates (same data, array access is faster)
+		onlyUniqueVec(num);
+		// push to numbers container
+		numbers_container.push_back(num);
+	}
+	size = numbers_container.size();
+}
