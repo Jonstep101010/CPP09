@@ -67,17 +67,31 @@ static void assertMainSortedVec(std::vector<int> inputvec, int unpaired, size_t 
 	}
 }
 
-void PmergeMe::debugPrintSortVec(size_t i) {
-	std::cout << "jac: " << jthal_vec[i] << std::endl;
-	std::cout << "val: "
-			  << (i < jthal_vec.size() - 1 ? pend_vec[jthal_vec[i]] : pend_vec[0])
-			  << std::endl;
-	std::vector<int>::iterator upper = std::upper_bound(
-		main_vec.begin(), main_vec.end(),
-		(i < jthal_vec.size() - 1 ? pend_vec[jthal_vec[i]] : pend_vec[0]));
-	std::cout << "inserting pend elem "
-			  << (i < jthal_vec.size() - 1 ? pend_vec[jthal_vec[i]] : pend_vec[0])
-			  << " at upper: " << *upper << std::endl;
+// check if main_deq is sorted & no duplicates @audit remove
+static void assertMainSortedDeq(std::deque<int> inputdeq, int unpaired, size_t size,
+								std::deque<int> main_deq) {
+	if (size % 2 != 0) {
+		inputdeq.push_back(unpaired);
+	}
+	std::deque<int> sorted_chain = inputdeq;
+	std::sort(sorted_chain.begin(), sorted_chain.end());
+	if (main_deq != sorted_chain) {
+		std::cerr << "Error\nSorted != main\nsorted_chain:\n";
+		std::copy(sorted_chain.begin(), sorted_chain.end(),
+				  std::ostream_iterator<int>(std::cout, " "));
+		std::cout << std::endl;
+		std::cerr << "main_deq\n";
+		std::copy(main_deq.begin(), main_deq.end(),
+				  std::ostream_iterator<int>(std::cout, " "));
+		std::cout << std::endl;
+		exit(1);
+	}
+	for (std::deque<int>::iterator it = main_deq.begin(); it != main_deq.end(); ++it) {
+		if (std::find(it + 1, main_deq.end(), *it) != main_deq.end()) {
+			std::cerr << "Error" << std::endl;
+			exit(1);
+		}
+	}
 }
 
 void PmergeMe::insertionSortVector() {
@@ -87,7 +101,6 @@ void PmergeMe::insertionSortVector() {
 		const int& val
 			= (i < jthal_vec.size() - 1 ? pend_vec[jthal_vec[i]] : pend_vec[0]);
 		upper = std::upper_bound(main_vec.begin(), main_vec.end(), val);
-		debugPrintSortVec(i);
 		main_vec.insert(upper, val);
 		pend_vec.erase(pend_vec.begin() + (i < jthal_vec.size() - 1 ? jthal_vec[i] : 0));
 		printContainerName(main_vec, "main_vec");
@@ -102,6 +115,23 @@ void PmergeMe::insertionSortVector() {
 }
 
 void PmergeMe::insertionSortDeque() {
+	set_jacobsthal(pend_deq.size(), jthal_deq);
+	std::deque<int>::iterator upper;
+	for (size_t i = 0; !pend_deq.empty(); i++) {
+		const int& val
+			= (i < jthal_deq.size() - 1 ? pend_deq[jthal_deq[i]] : pend_deq[0]);
+		upper = std::upper_bound(main_deq.begin(), main_deq.end(), val);
+		main_deq.insert(upper, val);
+		pend_deq.erase(pend_deq.begin() + (i < jthal_deq.size() - 1 ? jthal_deq[i] : 0));
+		printContainerName(main_deq, "main_deq");
+		printContainerName(pend_deq, "pend_deq");
+	}
+	// handle unpaired
+	if (size % 2 != 0) {
+		upper = std::upper_bound(main_deq.begin(), main_deq.end(), unpaired);
+		main_deq.insert(upper, unpaired);
+	}
+	assertMainSortedDeq(numbers_deq, unpaired, size, main_deq);
 	// @todo implement insertion sort for deque
 }
 
