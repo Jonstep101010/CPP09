@@ -24,3 +24,21 @@ template <typename PairsContainer> void PmergeMe::printContainerPairs(PairsConta
 	}
 	std::cout << std::endl;
 }
+
+template <typename Container>
+void PmergeMe::set_jacobsthal(size_t size, Container& jacobsthal) {
+	jacobsthal.clear();
+	if (size >= 2) {
+		jacobsthal.push_back(0);
+		jacobsthal.push_back(1);
+		for (size_t i = 2; jacobsthal.back() < (int)(size / 2 + 1); i++) {
+			int nextNumber = jacobsthal[i - 1] + 2 * jacobsthal[i - 2];
+			jacobsthal.push_back(nextNumber);
+		}
+		jacobsthal.erase(jacobsthal.begin() + 1);
+	} else {
+		jacobsthal.push_back(0);
+	}
+	printContainerName(jacobsthal, "Jacobsthal");
+}
+

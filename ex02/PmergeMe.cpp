@@ -55,22 +55,6 @@ PmergeMe& PmergeMe::operator=(PmergeMe const& rhs) {
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void PmergeMe::set_jacobsthal(size_t size) {
-	jacobsthal.clear();
-	if (size >= 2) {
-		jacobsthal.push_back(0);
-		jacobsthal.push_back(1);
-		for (size_t i = 2; jacobsthal.back() < (int)(size / 2 + 1); i++) {
-			int nextNumber = jacobsthal[i - 1] + 2 * jacobsthal[i - 2];
-			jacobsthal.push_back(nextNumber);
-		}
-		jacobsthal.erase(jacobsthal.begin() + 1);
-	} else {
-		jacobsthal.push_back(0);
-	}
-	printContainerName(jacobsthal, "Jacobsthal");
-}
-
 /**
  * @brief check for duplicates to prevent issues in sorting
  */
@@ -201,26 +185,26 @@ void PmergeMe::collectPairs() {
 // }
 
 void PmergeMe::debugPrintSortVec(size_t i) {
-	std::cout << "jac: " << jacobsthal[i] << std::endl;
-	std::cout << "val: " << (i < jacobsthal.size() - 1 ? pend[jacobsthal[i]] : pend[0])
+	std::cout << "jac: " << jthal_vec[i] << std::endl;
+	std::cout << "val: " << (i < jthal_vec.size() - 1 ? pend[jthal_vec[i]] : pend[0])
 			  << std::endl;
 	std::vector<int>::iterator upper
 		= std::upper_bound(main_chain.begin(), main_chain.end(),
-						   (i < jacobsthal.size() - 1 ? pend[jacobsthal[i]] : pend[0]));
+						   (i < jthal_vec.size() - 1 ? pend[jthal_vec[i]] : pend[0]));
 	std::cout << "inserting pend elem "
-			  << (i < jacobsthal.size() - 1 ? pend[jacobsthal[i]] : pend[0])
+			  << (i < jthal_vec.size() - 1 ? pend[jthal_vec[i]] : pend[0])
 			  << " at upper: " << *upper << std::endl;
 }
 
 void PmergeMe::insertionSortVector() {
-	set_jacobsthal(pend.size());
+	set_jacobsthal(pend.size(), jthal_vec);
 	std::vector<int>::iterator upper;
 	for (size_t i = 0; !pend.empty(); i++) {
-		const int& val = (i < jacobsthal.size() - 1 ? pend[jacobsthal[i]] : pend[0]);
+		const int& val = (i < jthal_vec.size() - 1 ? pend[jthal_vec[i]] : pend[0]);
 		upper          = std::upper_bound(main_chain.begin(), main_chain.end(), val);
 		debugPrintSortVec(i);
 		main_chain.insert(upper, val);
-		pend.erase(pend.begin() + (i < jacobsthal.size() - 1 ? jacobsthal[i] : 0));
+		pend.erase(pend.begin() + (i < jthal_vec.size() - 1 ? jthal_vec[i] : 0));
 		printContainerName(main_chain, "main_chain");
 		printContainerName(pend, "pend");
 	}

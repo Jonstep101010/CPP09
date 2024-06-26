@@ -26,6 +26,7 @@ private:
 	// heap-array (contiguous memory)
 	// insertions/deletions at beginning/middle slower than deque (re-allocation, copying)
 	std::vector<int> numbers_vec;
+	std::vector<int> jthal_vec;
 	// double ended queue (non-contiguous memory)
 	// indexing slower than vector, but faster insertion/deletion at ends
 	std::deque<int> numbers_deq;
@@ -68,4 +69,5 @@ private:
 	template <typename Container> void printContainer(Container& c);
 	template <typename Container> void printContainerName(Container& c, std::string name);
 	template <typename PairsContainer> void printContainerPairs(PairsContainer& c);
+	template <typename Container> void set_jacobsthal(size_t size, Container& jacobsthal);
 };
