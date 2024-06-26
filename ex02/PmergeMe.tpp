@@ -5,24 +5,39 @@
 #include <iostream>
 #include <iterator>
 
+#define PRINTDEF 1
+
 template <typename Container> void PmergeMe::printContainer(Container& c) {
+#if PRINTDEF
 	std::copy(c.begin(), c.end(), std::ostream_iterator<int>(std::cout, " "));
 	std::cout << std::endl;
+#else
+	(void)c;
+#endif
 }
 
 template <typename Container>
 void PmergeMe::printContainerName(Container& c, std::string name) {
+#if PRINTDEF
 	std::cout << name << ": [ ";
 	std::copy(c.begin(), c.end(), std::ostream_iterator<int>(std::cout, " "));
 	std::cout << "]" << std::endl;
+#else
+	(void)c;
+	(void)name;
+#endif
 }
 
 template <typename PairsContainer> void PmergeMe::printContainerPairs(PairsContainer& c) {
+#if PRINTDEF
 	std::cout << "Pairs: ";
 	for (typename PairsContainer::const_iterator it = c.begin(); it != c.end(); ++it) {
 		std::cout << "[" << it->first << " " << it->second << "] ";
 	}
 	std::cout << std::endl;
+#else
+	(void)c;
+#endif
 }
 
 template <typename Container>

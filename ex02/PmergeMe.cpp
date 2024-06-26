@@ -138,6 +138,7 @@ void PmergeMe::insertionSortDeque() {
 #define ERROR(x) std::cerr << "\033[1;31m" << x << "\033[0m"
 #define OK(x) std::cout << "\033[1;32m" << x << "\033[0m"
 void PmergeMe::compare_sorted() {
+	system("rm -f outdeq.txt outvec.txt");
 	// swap stdout to outfiles for diff
 	std::ofstream outdeq("outdeq.txt");
 	for (std::deque<int>::iterator it = main_deq.begin(); it != main_deq.end(); ++it) {
