@@ -1,6 +1,7 @@
 #pragma once
+#include <cstddef>
+#include <ctime>
 #include <deque>
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -62,4 +63,9 @@ private:
 	std::vector<std::pair<int, int> >::iterator findLargest_range(std::vector<std::pair<int, int> >::iterator start, std::vector<std::pair<int, int> >::iterator end);
 	std::vector<std::pair<int, int> >::iterator findSmallest_range(std::vector<std::pair<int, int> >::iterator start, std::vector<std::pair<int, int> >::iterator end);
 	// clang-format on
+
+	/* -------------------------------- Templates ------------------------------- */
+	template <typename Container> void printContainer(Container& c);
+	template <typename Container> void printContainerName(Container& c, std::string name);
+	template <typename PairsContainer> void printContainerPairs(PairsContainer& c);
 };

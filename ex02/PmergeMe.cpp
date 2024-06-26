@@ -1,10 +1,8 @@
 #include "PmergeMe.hpp"
+#include "PmergeMe.tpp"
 #include <algorithm>
 #include <cstdlib>
-#include <iterator>
 #include <vector>
-
-static void printVectorName(std::vector<int> const& vec, std::string vecname);
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -48,6 +46,7 @@ PmergeMe::~PmergeMe() {}
 
 PmergeMe& PmergeMe::operator=(PmergeMe const& rhs) {
 	if (this != &rhs) {
+		// @todo copy all data attributes
 	}
 	return *this;
 }
@@ -69,7 +68,7 @@ void PmergeMe::set_jacobsthal(size_t size) {
 	} else {
 		jacobsthal.push_back(0);
 	}
-	printVectorName(jacobsthal, "Jacobsthal");
+	printContainerName(jacobsthal, "Jacobsthal");
 }
 
 /**
@@ -80,28 +79,6 @@ void PmergeMe::onlyUniqueVec(int num) {
 		std::cerr << "Error" << std::endl;
 		exit(1);
 	}
-}
-
-static void printVector(std::vector<int> const& vec) {
-	std::copy(vec.begin(), vec.end(), std::ostream_iterator<int>(std::cout, " "));
-	std::cout << std::endl;
-}
-
-static void printVectorName(std::vector<int> const& vec, std::string vecname) {
-	std::cout << vecname << ": [ ";
-	std::copy(vec.begin(), vec.end(), std::ostream_iterator<int>(std::cout, " "));
-	std::cout << "]" << std::endl;
-}
-
-// clang-format off
-static void printPairsVec(std::vector<std::pair<int, int> > const& vec) {
-	std::cout << "Pairs: ";
-	for (std::vector<std::pair<int, int> >::const_iterator it = vec.begin();
-		 // clang-format on
-		 it != vec.end(); ++it) {
-		std::cout << "[" << it->first << " " << it->second << "] ";
-	}
-	std::cout << std::endl;
 }
 
 void PmergeMe::createPairs() {
@@ -115,7 +92,7 @@ void PmergeMe::createPairs() {
 	for (size_t i = 0; i < numbers_vec.size(); i += 2) {
 		pairs.push_back(std::make_pair(numbers_vec[i], numbers_vec[i + 1]));
 	}
-	printPairsVec(pairs);
+	printContainerPairs(pairs);
 }
 
 void PmergeMe::unsortEachPair() {
@@ -128,7 +105,7 @@ void PmergeMe::unsortEachPair() {
 		}
 	}
 	std::cout << "Unsorted ";
-	printPairsVec(pairs);
+	printContainerPairs(pairs);
 }
 
 // clang-format off
@@ -186,7 +163,7 @@ void PmergeMe::sortPairsByFirst() {
 	}
 
 	std::cout << "Sorted ";
-	printPairsVec(pairs);
+	printContainerPairs(pairs);
 }
 
 void PmergeMe::collectPairs() {
@@ -195,33 +172,33 @@ void PmergeMe::collectPairs() {
 		pend.push_back(pairs[i].second);
 	}
 	// print main_chain and pend
-	printVectorName(main_chain, "main_chain");
-	printVectorName(pend, "pend");
+	printContainerName(main_chain, "main_chain");
+	printContainerName(pend, "pend");
 }
 
 // check if main_chain is sorted & no duplicates @audit remove
-static void assertMainSorted(std::vector<int> inputvec, int unpaired, size_t size,
-							 std::vector<int> main_chain) {
-	if (size % 2 != 0) {
-		inputvec.push_back(unpaired);
-	}
-	std::vector<int> sorted_chain = inputvec;
-	std::sort(sorted_chain.begin(), sorted_chain.end());
-	if (main_chain != sorted_chain) {
-		std::cerr << "Error\nSorted != main\nsorted_chain:\n";
-		printVector(sorted_chain);
-		std::cerr << "main_chain\n";
-		printVector(main_chain);
-		exit(1);
-	}
-	for (std::vector<int>::iterator it = main_chain.begin(); it != main_chain.end();
-		 ++it) {
-		if (std::find(it + 1, main_chain.end(), *it) != main_chain.end()) {
-			std::cerr << "Error" << std::endl;
-			exit(1);
-		}
-	}
-}
+// static void assertMainSorted(std::vector<int> inputvec, int unpaired, size_t size,
+// 							 std::vector<int> main_chain) {
+// 	if (size % 2 != 0) {
+// 		inputvec.push_back(unpaired);
+// 	}
+// 	std::vector<int> sorted_chain = inputvec;
+// 	std::sort(sorted_chain.begin(), sorted_chain.end());
+// 	if (main_chain != sorted_chain) {
+// 		std::cerr << "Error\nSorted != main\nsorted_chain:\n";
+// 		printContainer(sorted_chain);
+// 		std::cerr << "main_chain\n";
+// 		printContainer(main_chain);
+// 		exit(1);
+// 	}
+// 	for (std::vector<int>::iterator it = main_chain.begin(); it != main_chain.end();
+// 		 ++it) {
+// 		if (std::find(it + 1, main_chain.end(), *it) != main_chain.end()) {
+// 			std::cerr << "Error" << std::endl;
+// 			exit(1);
+// 		}
+// 	}
+// }
 
 void PmergeMe::debugPrintSortVec(size_t i) {
 	std::cout << "jac: " << jacobsthal[i] << std::endl;
@@ -244,15 +221,15 @@ void PmergeMe::insertionSortVector() {
 		debugPrintSortVec(i);
 		main_chain.insert(upper, val);
 		pend.erase(pend.begin() + (i < jacobsthal.size() - 1 ? jacobsthal[i] : 0));
-		printVectorName(main_chain, "main_chain");
-		printVectorName(pend, "pend");
+		printContainerName(main_chain, "main_chain");
+		printContainerName(pend, "pend");
 	}
 	// handle unpaired
 	if (size % 2 != 0) {
 		upper = std::upper_bound(main_chain.begin(), main_chain.end(), unpaired);
 		main_chain.insert(upper, unpaired);
 	}
-	assertMainSorted(numbers_vec, unpaired, size, main_chain);
+	// assertMainSorted(numbers_vec, unpaired, size, main_chain);
 }
 
 void PmergeMe::insertionSortDeque() {
@@ -263,7 +240,7 @@ void PmergeMe::sort() {
 	// requires parsed input
 	// Print before
 	std::cout << "Before: ";
-	printVector(numbers_vec);
+	printContainer(numbers_vec);
 	// start timer 1
 	start = clock();
 	createPairs();
@@ -283,7 +260,7 @@ void PmergeMe::sort() {
 	// end timer 2
 	// Print after
 	std::cout << "After: ";
-	printVector(main_chain);
+	printContainer(main_chain);
 	// Print time 1
 	// Print time 2
 }
