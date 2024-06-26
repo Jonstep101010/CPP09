@@ -11,15 +11,15 @@ static void printVectorName(std::vector<int> const& vec, std::string vecname);
 */
 
 PmergeMe::PmergeMe()
-	: size(0), unpaired(0) {}
+	: size(0), start(), end(), unpaired(0) {}
 
 PmergeMe::PmergeMe(const PmergeMe& src)
-	: size(0), unpaired(0) {
+	: size(0), start(), end(), unpaired(0) {
 	*this = src;
 }
 
 PmergeMe::PmergeMe(char** argv)
-	: size(0), unpaired(0) {
+	: size(0), start(), end(), unpaired(0) {
 	while (*++argv) {
 		std::string str(*argv);
 		if (str.find_first_not_of("0123456789") != std::string::npos) {
@@ -264,15 +264,19 @@ void PmergeMe::sort() {
 	// Print before
 	std::cout << "Before: ";
 	printVector(numbers_vec);
+	// start timer 1
+	start = clock();
 	createPairs();
 	unsortEachPair();
 	sortPairsByFirst();
 	collectPairs();
 
-	// start timer 1
 	// Sort 1
 	insertionSortVector();
 	// end timer 1
+	end = clock();
+	std::cout << "Time to process : " << ((double)(end - start) / (CLOCKS_PER_SEC / 1000))
+			  << "ms\n";
 	// start timer 2
 	// Sort 2
 	insertionSortDeque();

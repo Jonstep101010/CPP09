@@ -29,6 +29,9 @@ private:
 	// indexing slower than vector, but faster insertion/deletion at ends
 	std::deque<int> numbers_deq;
 
+	clock_t start;
+	clock_t end;
+
 	// bool	is_odd; indicated by size
 	// size_t size;
 	int unpaired;
