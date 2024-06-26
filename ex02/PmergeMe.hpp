@@ -77,13 +77,4 @@ private:
 
 	template <typename Container, typename PairsContainer>
 	void collectPairs(PairsContainer& pairs, Container& main, Container& pend);
-
-	template <typename PairsContainer>
-	typename PairsContainer::iterator
-	findLargest_range(typename PairsContainer::iterator start,
-					  typename PairsContainer::iterator end);
-	template <typename PairsContainer>
-	typename PairsContainer::iterator
-	findSmallest_range(typename PairsContainer::iterator start,
-					   typename PairsContainer::iterator end);
 };

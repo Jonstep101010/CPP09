@@ -113,7 +113,9 @@ void PmergeMe::sort() {
 	createPairs(numbers_vec, pairs_vec);
 	unsortEachPair(pairs_vec);
 	sortPairsByFirst(pairs_vec);
+	// clang-format off
 	collectPairs<std::vector<int> >(pairs_vec, main_vec, pend_vec);
+	// clang-format on
 
 	// Sort 1
 	insertionSortVector();
