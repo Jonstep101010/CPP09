@@ -54,7 +54,6 @@ private:
 
 	/* --------------------------------- METHODS ---------------------------------- */
 
-	void collectPairs();
 	void insertionSortVector();
 	void insertionSortDeque();
 
@@ -80,4 +79,7 @@ private:
 	template <typename PairsContainer> void unsortEachPair(PairsContainer& pairs);
 
 	template <typename PairsContainer> void sortPairsByFirst(PairsContainer& pairs);
+
+	template <typename Container, typename PairsContainer>
+	void collectPairs(PairsContainer& pairs, Container& main, Container& pend);
 };

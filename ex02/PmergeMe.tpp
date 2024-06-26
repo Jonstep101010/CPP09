@@ -105,3 +105,14 @@ void PmergeMe::sortPairsByFirst(PairsContainer& pairs) {
 	std::cout << "Sorted ";
 	printContainerPairs(pairs);
 }
+
+template <typename Container, typename PairsContainer>
+void PmergeMe::collectPairs(PairsContainer& pairs, Container& main, Container& pend) {
+	for (size_t i = 0; i < pairs.size(); i++) {
+		main.push_back(pairs[i].first);
+		pend.push_back(pairs[i].second);
+	}
+	// print main & pend
+	printContainerName(main, "main");
+	printContainerName(pend, "pend");
+}

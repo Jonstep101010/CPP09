@@ -67,16 +67,6 @@ std::vector<std::pair<int, int> >::iterator PmergeMe::findSmallest_range(std::ve
 	return smallest;
 }
 
-void PmergeMe::collectPairs() {
-	for (size_t i = 0; i < pairs_vec.size(); i++) {
-		main_vec.push_back(pairs_vec[i].first);
-		pend_vec.push_back(pairs_vec[i].second);
-	}
-	// print main_vec and pend_vec
-	printContainerName(main_vec, "main_vec");
-	printContainerName(pend_vec, "pend_vec");
-}
-
 // check if main_vec is sorted & no duplicates @audit remove
 // static void assertMainSorted(std::vector<int> inputvec, int unpaired, size_t size,
 // 							 std::vector<int> main_vec) {
@@ -150,7 +140,7 @@ void PmergeMe::sort() {
 	createPairs(numbers_vec, pairs_vec);
 	unsortEachPair(pairs_vec);
 	sortPairsByFirst(pairs_vec);
-	collectPairs();
+	collectPairs(pairs_vec, main_vec, pend_vec);
 
 	// Sort 1
 	insertionSortVector();
