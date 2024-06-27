@@ -57,23 +57,27 @@ void PmergeMe::compare_sorted() {
 	system("diff -s outdeq.txt outvec.txt") ? ERROR("Error\n") : OK("[OK]\n");
 }
 
+static void print_before_after(std::vector<int>& vec, std::string str) {
+	std::cout << str << ": ";
+	std::copy(vec.begin(), vec.end(), std::ostream_iterator<int>(std::cout, " "));
+	std::cout << std::endl;
+}
+
 void PmergeMe::sort() {
+	// clang-format off
 	// start timer 1
 	start = clock();
 	get_input(numbers_vec);
 	// Print before
-	std::cout << "Before: ";
-	printContainer(numbers_vec);
+	print_before_after(numbers_vec, "Before");
 	createPairs(numbers_vec, pairs_vec);
 	unsortEachPair(pairs_vec);
 	sortPairsByFirst(pairs_vec);
-	// clang-format off
 	collectPairs<std::vector<int> >(pairs_vec, main_vec, pend_vec);
 
 	// Sort 1
 	insertionSort<std::vector<int> >(main_vec, pend_vec, jthal_vec, size);
 	assertMainSorted<std::vector<int> >(numbers_vec, unpaired, size, main_vec);
-	// clang-format on
 	// end timer 1
 	timeElapsedVec = ((double)(clock() - start) / (CLOCKS_PER_SEC));
 
@@ -83,7 +87,6 @@ void PmergeMe::sort() {
 	createPairs(numbers_deq, pairs_deq);
 	unsortEachPair(pairs_deq);
 	sortPairsByFirst(pairs_deq);
-	// clang-format off
 	collectPairs<std::deque<int> >(pairs_deq, main_deq, pend_deq);
 	// Sort 2
 	insertionSort<std::deque<int> >(main_deq, pend_deq, jthal_deq, size);
@@ -92,9 +95,7 @@ void PmergeMe::sort() {
 	// end timer 2
 	timeElapsedDeq = ((double)(clock() - start) / (CLOCKS_PER_SEC));
 	// Print after
-	std::cout << "After: \n";
-	printContainerName(main_deq, "DEQUE");
-	printContainerName(main_vec, "VECTOR");
+	print_before_after(main_vec, "After");
 	// Print time 1
 	std::cout << "Time to process a range of " << size
 			  << " elements with std::vector : " << timeElapsedVec << std::endl;

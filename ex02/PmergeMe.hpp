@@ -64,7 +64,8 @@ private:
 	/* -------------------------------- Templates ------------------------------- */
 	template <typename Container> void printContainer(Container& c);
 	template <typename Container> void printContainerName(Container& c, std::string name);
-	template <typename PairsContainer> void printContainerPairs(PairsContainer& c);
+	template <typename PairsContainer>
+	void printContainerPairs(PairsContainer& c, std::string prefix);
 
 	template <typename Container> void set_jacobsthal(size_t size, Container& jacobsthal);
 

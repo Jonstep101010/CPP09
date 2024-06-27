@@ -5,7 +5,7 @@
 #include <iostream>
 #include <iterator>
 
-#define PRINTDEF 1
+#define PRINTDEF 0
 
 template <typename Container> void PmergeMe::printContainer(Container& c) {
 #if PRINTDEF
@@ -28,15 +28,17 @@ void PmergeMe::printContainerName(Container& c, std::string name) {
 #endif
 }
 
-template <typename PairsContainer> void PmergeMe::printContainerPairs(PairsContainer& c) {
+template <typename PairsContainer>
+void PmergeMe::printContainerPairs(PairsContainer& c, std::string prefix) {
 #if PRINTDEF
-	std::cout << "Pairs: ";
+	std::cout << prefix << "Pairs: ";
 	for (typename PairsContainer::const_iterator it = c.begin(); it != c.end(); ++it) {
 		std::cout << "[" << it->first << " " << it->second << "] ";
 	}
 	std::cout << std::endl;
 #else
 	(void)c;
+	(void)prefix;
 #endif
 }
 
@@ -82,13 +84,15 @@ void PmergeMe::createPairs(Container& numbers, PairsContainer& pairs) {
 	if (numbers.size() % 2 != 0) {
 		unpaired = numbers.back();
 		numbers.pop_back();
+#if PRINTDEF
 		std::cout << "Unpaired: " << unpaired << std::endl;
+#endif
 	}
 	// group into size / 2 pairs
 	for (size_t i = 0; i < numbers.size(); i += 2) {
 		pairs.push_back(std::make_pair(numbers[i], numbers[i + 1]));
 	}
-	printContainerPairs(pairs);
+	printContainerPairs(pairs, "");
 }
 
 template <typename PairsContainer> void PmergeMe::unsortEachPair(PairsContainer& pairs) {
@@ -97,8 +101,7 @@ template <typename PairsContainer> void PmergeMe::unsortEachPair(PairsContainer&
 			std::swap(it->first, it->second);
 		}
 	}
-	std::cout << "Unsorted ";
-	printContainerPairs(pairs);
+	printContainerPairs(pairs, "Unsorted ");
 }
 
 template <typename PairsContainer, typename Compare>
@@ -133,8 +136,7 @@ void PmergeMe::sortPairsByFirst(PairsContainer& pairs) {
 		// clang-format on
 		std::swap(*it, *smallest);
 	}
-	std::cout << "Sorted ";
-	printContainerPairs(pairs);
+	printContainerPairs(pairs, "Sorted ");
 }
 
 template <typename Container, typename PairsContainer>
