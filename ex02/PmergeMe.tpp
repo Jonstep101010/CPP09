@@ -5,7 +5,7 @@
 #include <iostream>
 #include <iterator>
 
-#define PRINTDEF 0
+#define PRINTDEF 1
 
 template <typename Container> void PmergeMe::printContainer(Container& c) {
 #if PRINTDEF
@@ -146,6 +146,33 @@ void PmergeMe::collectPairs(PairsContainer& pairs, Container& main, Container& p
 	// print main & pend
 	printContainerName(main, "main");
 	printContainerName(pend, "pend");
+}
+
+template <typename Container>
+void PmergeMe::assertMainSorted(Container& input, int unpaired, size_t size,
+								Container& main_chain) {
+	if (size % 2 != 0) {
+		input.push_back(unpaired);
+	}
+	Container sorted_chain(input);
+	std::sort(sorted_chain.begin(), sorted_chain.end());
+	if (main_chain != sorted_chain) {
+		std::cerr << "Error\nSorted != main\nsorted_chain:\n";
+		std::copy(sorted_chain.begin(), sorted_chain.end(),
+				  std::ostream_iterator<int>(std::cout, " "));
+		std::cerr << "\nmain_chain\n";
+		std::copy(main_chain.begin(), main_chain.end(),
+				  std::ostream_iterator<int>(std::cout, " "));
+		ERROR("FAIL\n");
+		throw Error();
+	}
+	for (typename Container::iterator it = main_chain.begin(); it != main_chain.end();
+		 ++it) {
+		if (std::find(it + 1, main_chain.end(), *it) != main_chain.end()) {
+			ERROR("FATAL ERROR\n");
+			throw Error();
+		}
+	}
 }
 
 template <typename Container>

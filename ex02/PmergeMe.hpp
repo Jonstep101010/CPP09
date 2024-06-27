@@ -5,6 +5,9 @@
 #include <string>
 #include <vector>
 
+#define ERROR(x) std::cerr << "\033[1;31m" << x << "\033[0m"
+#define OK(x) std::cout << "\033[1;32m" << x << "\033[0m"
+
 class PmergeMe {
 
 public:
@@ -77,6 +80,11 @@ private:
 	template <typename Container, typename PairsContainer>
 	void collectPairs(PairsContainer& pairs, Container& main, Container& pend);
 
+	/// SORTING ///
 	template <typename Container>
 	void insertionSort(Container& main, Container& pend, Container& jthal, size_t size);
+
+	template <typename Container>
+	void assertMainSorted(Container& input, int unpaired, size_t size,
+						  Container& main_chain);
 };

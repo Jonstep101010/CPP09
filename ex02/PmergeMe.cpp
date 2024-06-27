@@ -40,63 +40,7 @@ PmergeMe& PmergeMe::operator=(PmergeMe const& rhs) {
 ** --------------------------------- METHODS ----------------------------------
 */
 
-// check if main_vec is sorted & no duplicates @audit remove
-static void assertMainSortedVec(std::vector<int> inputvec, int unpaired, size_t size,
-								std::vector<int> main_vec) {
-	if (size % 2 != 0) {
-		inputvec.push_back(unpaired);
-	}
-	std::vector<int> sorted_chain = inputvec;
-	std::sort(sorted_chain.begin(), sorted_chain.end());
-	if (main_vec != sorted_chain) {
-		std::cerr << "Error\nSorted != main\nsorted_chain:\n";
-		std::copy(sorted_chain.begin(), sorted_chain.end(),
-				  std::ostream_iterator<int>(std::cout, " "));
-		std::cout << std::endl;
-		std::cerr << "main_vec\n";
-		std::copy(main_vec.begin(), main_vec.end(),
-				  std::ostream_iterator<int>(std::cout, " "));
-		std::cout << std::endl;
-		exit(1);
-	}
-	for (std::vector<int>::iterator it = main_vec.begin(); it != main_vec.end(); ++it) {
-		if (std::find(it + 1, main_vec.end(), *it) != main_vec.end()) {
-			std::cerr << "Error" << std::endl;
-			exit(1);
-		}
-	}
-}
-
-// check if main_deq is sorted & no duplicates @audit remove
-static void assertMainSortedDeq(std::deque<int> inputdeq, int unpaired, size_t size,
-								std::deque<int> main_deq) {
-	if (size % 2 != 0) {
-		inputdeq.push_back(unpaired);
-	}
-	std::deque<int> sorted_chain = inputdeq;
-	std::sort(sorted_chain.begin(), sorted_chain.end());
-	if (main_deq != sorted_chain) {
-		std::cerr << "Error\nSorted != main\nsorted_chain:\n";
-		std::copy(sorted_chain.begin(), sorted_chain.end(),
-				  std::ostream_iterator<int>(std::cout, " "));
-		std::cout << std::endl;
-		std::cerr << "main_deq\n";
-		std::copy(main_deq.begin(), main_deq.end(),
-				  std::ostream_iterator<int>(std::cout, " "));
-		std::cout << std::endl;
-		exit(1);
-	}
-	for (std::deque<int>::iterator it = main_deq.begin(); it != main_deq.end(); ++it) {
-		if (std::find(it + 1, main_deq.end(), *it) != main_deq.end()) {
-			std::cerr << "Error" << std::endl;
-			exit(1);
-		}
-	}
-}
-
 #include <fstream>
-#define ERROR(x) std::cerr << "\033[1;31m" << x << "\033[0m"
-#define OK(x) std::cout << "\033[1;32m" << x << "\033[0m"
 void PmergeMe::compare_sorted() {
 	system("rm -f outdeq.txt outvec.txt");
 	// swap stdout to outfiles for diff
@@ -114,7 +58,6 @@ void PmergeMe::compare_sorted() {
 }
 
 void PmergeMe::sort() {
-	// requires parsed input @audit
 	// start timer 1
 	start = clock();
 	get_input(numbers_vec);
@@ -129,7 +72,7 @@ void PmergeMe::sort() {
 
 	// Sort 1
 	insertionSort<std::vector<int> >(main_vec, pend_vec, jthal_vec, size);
-	assertMainSortedVec(numbers_vec, unpaired, size, main_vec);
+	assertMainSorted<std::vector<int> >(numbers_vec, unpaired, size, main_vec);
 	// clang-format on
 	// end timer 1
 	timeElapsedVec = ((double)(clock() - start) / (CLOCKS_PER_SEC));
@@ -144,7 +87,7 @@ void PmergeMe::sort() {
 	collectPairs<std::deque<int> >(pairs_deq, main_deq, pend_deq);
 	// Sort 2
 	insertionSort<std::deque<int> >(main_deq, pend_deq, jthal_deq, size);
-	assertMainSortedDeq(numbers_deq, unpaired, size, main_deq);
+	assertMainSorted<std::deque<int> >(numbers_deq, unpaired, size, main_deq);
 	// clang-format on
 	// end timer 2
 	timeElapsedDeq = ((double)(clock() - start) / (CLOCKS_PER_SEC));
