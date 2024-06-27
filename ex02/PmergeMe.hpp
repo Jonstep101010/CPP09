@@ -23,13 +23,13 @@ public:
 	class Error : public std::exception {
 		virtual const char* what() const throw() { return "Error"; }
 	};
+	char** argv;
 
 private:
 	size_t size;
 	int    unpaired;
 
 	clock_t start;
-	char**  argv;
 
 	double timeElapsedVec;
 	double timeElapsedDeq;
@@ -62,13 +62,18 @@ private:
 	void compare_sorted();
 
 	/* -------------------------------- Templates ------------------------------- */
+
+	/// PRINTING ///
 	template <typename Container> void printContainer(Container& c);
 	template <typename Container> void printContainerName(Container& c, std::string name);
 	template <typename PairsContainer>
 	void printContainerPairs(PairsContainer& c, std::string prefix);
 
+
+	/// JACOBSTHAL ///
 	template <typename Container> void set_jacobsthal(size_t size, Container& jacobsthal);
 
+	/// INPUT ///
 	template <typename Container> void get_input(Container& numbers);
 
 	/// PAIRS OPS ///
