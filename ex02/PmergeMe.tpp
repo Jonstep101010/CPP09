@@ -81,10 +81,9 @@ template <typename Container> void PmergeMe::get_input(Container& numbers) {
 template <typename Container, typename PairsContainer>
 void PmergeMe::createPairs(Container& numbers, PairsContainer& pairs) {
 	if (numbers.size() % 2 != 0) {
-		unpaired   = numbers.back();
-		odd_length = true;
+		unpaired = &numbers.back();
 #if PRINTDEF
-		std::cout << "Unpaired: " << unpaired << std::endl;
+		std::cout << "Unpaired: " << *unpaired << std::endl;
 #endif
 	}
 	// group into size / 2 pairs
@@ -186,8 +185,8 @@ void PmergeMe::insertionSort(Container& main, Container& pend, Container& jthal)
 		printContainerName(pend, "pend");
 	}
 	// handle unpaired
-	if (odd_length) {
-		upper = std::upper_bound(main.begin(), main.end(), unpaired);
-		main.insert(upper, unpaired);
+	if (unpaired) {
+		upper = std::upper_bound(main.begin(), main.end(), *unpaired);
+		main.insert(upper, *unpaired);
 	}
 }

@@ -9,30 +9,15 @@
 */
 
 PmergeMe::PmergeMe()
-	: argv()
-	, odd_length(false)
-	, unpaired(0)
-	, start()
-	, timeElapsedVec(0)
-	, timeElapsedDeq(0) {}
+	: argv(), unpaired(NULL), start(), timeElapsedVec(0), timeElapsedDeq(0) {}
 
 PmergeMe::PmergeMe(const PmergeMe& src)
-	: argv()
-	, odd_length(false)
-	, unpaired(0)
-	, start()
-	, timeElapsedVec(0)
-	, timeElapsedDeq(0) {
+	: argv(), unpaired(NULL), start(), timeElapsedVec(0), timeElapsedDeq(0) {
 	*this = src;
 }
 
 PmergeMe::PmergeMe(char** argv)
-	: argv(argv)
-	, odd_length(false)
-	, unpaired(0)
-	, start()
-	, timeElapsedVec(0)
-	, timeElapsedDeq(0) {}
+	: argv(argv), unpaired(NULL), start(), timeElapsedVec(0), timeElapsedDeq(0) {}
 
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
@@ -47,7 +32,6 @@ PmergeMe::~PmergeMe() {}
 PmergeMe& PmergeMe::operator=(PmergeMe const& rhs) {
 	if (this != &rhs) {
 		argv           = rhs.argv;
-		odd_length     = rhs.odd_length;
 		unpaired       = rhs.unpaired;
 		start          = rhs.start;
 		timeElapsedVec = rhs.timeElapsedVec;

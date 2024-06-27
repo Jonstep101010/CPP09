@@ -26,8 +26,7 @@ public:
 	char** argv;
 
 private:
-	bool odd_length;
-	int  unpaired;
+	int* unpaired;
 
 	clock_t start;
 
