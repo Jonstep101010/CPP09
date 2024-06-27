@@ -5,7 +5,7 @@
 #include <iostream>
 #include <iterator>
 
-#define PRINTDEF 1
+#define PRINTDEF 0
 
 template <typename Container> void PmergeMe::printContainer(Container& c) {
 #if PRINTDEF
@@ -65,8 +65,7 @@ template <typename Container> void PmergeMe::get_input(Container& numbers) {
 	for (int i = 1; argv[i]; i++) {
 		const std::string str(argv[i]);
 		if (str.find_first_not_of("0123456789") != std::string::npos) {
-			std::cerr << "Error" << std::endl;
-			exit(1);
+			throw Error();
 		}
 		const int num = std::atoi((const char*)argv[i]);
 		if (std::find(numbers.begin(), numbers.end(), num) != numbers.end()) {
@@ -147,4 +146,24 @@ void PmergeMe::collectPairs(PairsContainer& pairs, Container& main, Container& p
 	// print main & pend
 	printContainerName(main, "main");
 	printContainerName(pend, "pend");
+}
+
+template <typename Container>
+void PmergeMe::insertionSort(Container& main, Container& pend, Container& jthal,
+							 const size_t size) {
+	set_jacobsthal(pend.size(), jthal);
+	typename Container::iterator upper;
+	for (size_t i = 0; !pend.empty(); i++) {
+		const int& val = (i < jthal.size() - 1 ? pend[jthal[i]] : pend[0]);
+		upper          = std::upper_bound(main.begin(), main.end(), val);
+		main.insert(upper, val);
+		pend.erase(pend.begin() + (i < jthal.size() - 1 ? jthal[i] : 0));
+		printContainerName(main, "main");
+		printContainerName(pend, "pend");
+	}
+	// handle unpaired
+	if (size % 2 != 0) {
+		upper = std::upper_bound(main.begin(), main.end(), unpaired);
+		main.insert(upper, unpaired);
+	}
 }

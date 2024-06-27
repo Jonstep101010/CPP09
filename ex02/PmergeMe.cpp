@@ -94,46 +94,6 @@ static void assertMainSortedDeq(std::deque<int> inputdeq, int unpaired, size_t s
 	}
 }
 
-void PmergeMe::insertionSortVector() {
-	set_jacobsthal(pend_vec.size(), jthal_vec);
-	std::vector<int>::iterator upper;
-	for (size_t i = 0; !pend_vec.empty(); i++) {
-		const int& val
-			= (i < jthal_vec.size() - 1 ? pend_vec[jthal_vec[i]] : pend_vec[0]);
-		upper = std::upper_bound(main_vec.begin(), main_vec.end(), val);
-		main_vec.insert(upper, val);
-		pend_vec.erase(pend_vec.begin() + (i < jthal_vec.size() - 1 ? jthal_vec[i] : 0));
-		printContainerName(main_vec, "main_vec");
-		printContainerName(pend_vec, "pend_vec");
-	}
-	// handle unpaired
-	if (size % 2 != 0) {
-		upper = std::upper_bound(main_vec.begin(), main_vec.end(), unpaired);
-		main_vec.insert(upper, unpaired);
-	}
-	assertMainSortedVec(numbers_vec, unpaired, size, main_vec);
-}
-
-void PmergeMe::insertionSortDeque() {
-	set_jacobsthal(pend_deq.size(), jthal_deq);
-	std::deque<int>::iterator upper;
-	for (size_t i = 0; !pend_deq.empty(); i++) {
-		const int& val
-			= (i < jthal_deq.size() - 1 ? pend_deq[jthal_deq[i]] : pend_deq[0]);
-		upper = std::upper_bound(main_deq.begin(), main_deq.end(), val);
-		main_deq.insert(upper, val);
-		pend_deq.erase(pend_deq.begin() + (i < jthal_deq.size() - 1 ? jthal_deq[i] : 0));
-		printContainerName(main_deq, "main_deq");
-		printContainerName(pend_deq, "pend_deq");
-	}
-	// handle unpaired
-	if (size % 2 != 0) {
-		upper = std::upper_bound(main_deq.begin(), main_deq.end(), unpaired);
-		main_deq.insert(upper, unpaired);
-	}
-	assertMainSortedDeq(numbers_deq, unpaired, size, main_deq);
-}
-
 #include <fstream>
 #define ERROR(x) std::cerr << "\033[1;31m" << x << "\033[0m"
 #define OK(x) std::cout << "\033[1;32m" << x << "\033[0m"
@@ -166,10 +126,11 @@ void PmergeMe::sort() {
 	sortPairsByFirst(pairs_vec);
 	// clang-format off
 	collectPairs<std::vector<int> >(pairs_vec, main_vec, pend_vec);
-	// clang-format on
 
 	// Sort 1
-	insertionSortVector();
+	insertionSort<std::vector<int> >(main_vec, pend_vec, jthal_vec, size);
+	assertMainSortedVec(numbers_vec, unpaired, size, main_vec);
+	// clang-format on
 	// end timer 1
 	timeElapsedVec = ((double)(clock() - start) / (CLOCKS_PER_SEC));
 
@@ -181,9 +142,10 @@ void PmergeMe::sort() {
 	sortPairsByFirst(pairs_deq);
 	// clang-format off
 	collectPairs<std::deque<int> >(pairs_deq, main_deq, pend_deq);
-	// clang-format on
 	// Sort 2
-	insertionSortDeque();
+	insertionSort<std::deque<int> >(main_deq, pend_deq, jthal_deq, size);
+	assertMainSortedDeq(numbers_deq, unpaired, size, main_deq);
+	// clang-format on
 	// end timer 2
 	timeElapsedDeq = ((double)(clock() - start) / (CLOCKS_PER_SEC));
 	// Print after

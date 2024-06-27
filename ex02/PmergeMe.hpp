@@ -56,9 +56,6 @@ private:
 
 	/* --------------------------------- METHODS ---------------------------------- */
 
-	void insertionSortVector();
-	void insertionSortDeque();
-
 	void compare_sorted();
 
 	/* -------------------------------- Templates ------------------------------- */
@@ -79,4 +76,7 @@ private:
 
 	template <typename Container, typename PairsContainer>
 	void collectPairs(PairsContainer& pairs, Container& main, Container& pend);
+
+	template <typename Container>
+	void insertionSort(Container& main, Container& pend, Container& jthal, size_t size);
 };
