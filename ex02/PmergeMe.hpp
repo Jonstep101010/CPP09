@@ -26,8 +26,8 @@ public:
 	char** argv;
 
 private:
-	size_t size;
-	int    unpaired;
+	bool odd_length;
+	int  unpaired;
 
 	clock_t start;
 
@@ -69,7 +69,6 @@ private:
 	template <typename PairsContainer>
 	void printContainerPairs(PairsContainer& c, std::string prefix);
 
-
 	/// JACOBSTHAL ///
 	template <typename Container> void set_jacobsthal(size_t size, Container& jacobsthal);
 
@@ -88,9 +87,8 @@ private:
 
 	/// SORTING ///
 	template <typename Container>
-	void insertionSort(Container& main, Container& pend, Container& jthal, size_t size);
+	void insertionSort(Container& main, Container& pend, Container& jthal);
 
 	template <typename Container>
-	void assertMainSorted(Container& input, int unpaired, size_t size,
-						  Container& main_chain);
+	void assertMainSorted(Container& input, Container& main_chain);
 };

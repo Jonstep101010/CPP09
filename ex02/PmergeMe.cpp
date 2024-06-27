@@ -9,15 +9,30 @@
 */
 
 PmergeMe::PmergeMe()
-	: argv(), size(0), unpaired(0), start(), timeElapsedVec(0), timeElapsedDeq(0) {}
+	: argv()
+	, odd_length(false)
+	, unpaired(0)
+	, start()
+	, timeElapsedVec(0)
+	, timeElapsedDeq(0) {}
 
 PmergeMe::PmergeMe(const PmergeMe& src)
-	: argv(), size(0), unpaired(0), start(), timeElapsedVec(0), timeElapsedDeq(0) {
+	: argv()
+	, odd_length(false)
+	, unpaired(0)
+	, start()
+	, timeElapsedVec(0)
+	, timeElapsedDeq(0) {
 	*this = src;
 }
 
 PmergeMe::PmergeMe(char** argv)
-	: argv(argv), size(0), unpaired(0), start(), timeElapsedVec(0), timeElapsedDeq(0) {}
+	: argv(argv)
+	, odd_length(false)
+	, unpaired(0)
+	, start()
+	, timeElapsedVec(0)
+	, timeElapsedDeq(0) {}
 
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
@@ -32,7 +47,7 @@ PmergeMe::~PmergeMe() {}
 PmergeMe& PmergeMe::operator=(PmergeMe const& rhs) {
 	if (this != &rhs) {
 		argv           = rhs.argv;
-		size           = rhs.size;
+		odd_length     = rhs.odd_length;
 		unpaired       = rhs.unpaired;
 		start          = rhs.start;
 		timeElapsedVec = rhs.timeElapsedVec;
@@ -85,8 +100,8 @@ void PmergeMe::sort() {
 	collectPairs<std::vector<int> >(pairs_vec, main_vec, pend_vec);
 
 	// Sort 1
-	insertionSort<std::vector<int> >(main_vec, pend_vec, jthal_vec, size);
-	assertMainSorted<std::vector<int> >(numbers_vec, unpaired, size, main_vec);
+	insertionSort<std::vector<int> >(main_vec, pend_vec, jthal_vec);
+	assertMainSorted<std::vector<int> >(numbers_vec, main_vec);
 	// end timer 1
 	timeElapsedVec = ((double)(clock() - start) / (CLOCKS_PER_SEC));
 
@@ -98,18 +113,18 @@ void PmergeMe::sort() {
 	sortPairsByFirst(pairs_deq);
 	collectPairs<std::deque<int> >(pairs_deq, main_deq, pend_deq);
 	// Sort 2
-	insertionSort<std::deque<int> >(main_deq, pend_deq, jthal_deq, size);
-	assertMainSorted<std::deque<int> >(numbers_deq, unpaired, size, main_deq);
+	insertionSort<std::deque<int> >(main_deq, pend_deq, jthal_deq);
+	assertMainSorted<std::deque<int> >(numbers_deq, main_deq);
 	// clang-format on
 	// end timer 2
 	timeElapsedDeq = ((double)(clock() - start) / (CLOCKS_PER_SEC));
 	// Print after
 	print_before_after(main_vec, "After");
 	// Print time 1
-	std::cout << "Time to process a range of " << size
+	std::cout << "Time to process a range of " << numbers_vec.size()
 			  << " elements with std::vector : " << timeElapsedVec << std::endl;
 	// Print time 2
-	std::cout << "Time to process a range of " << size
+	std::cout << "Time to process a range of " << numbers_deq.size()
 			  << " elements with std::deque : " << timeElapsedDeq << std::endl;
 	compare_sorted(); // @audit remove
 }

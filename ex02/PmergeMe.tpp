@@ -5,7 +5,7 @@
 #include <iostream>
 #include <iterator>
 
-#define PRINTDEF 0
+#define PRINTDEF 1
 
 template <typename Container> void PmergeMe::printContainer(Container& c) {
 #if PRINTDEF
@@ -76,20 +76,20 @@ template <typename Container> void PmergeMe::get_input(Container& numbers) {
 		// push to numbers container
 		numbers.push_back(num);
 	}
-	size = numbers.size();
 }
 
 template <typename Container, typename PairsContainer>
 void PmergeMe::createPairs(Container& numbers, PairsContainer& pairs) {
 	if (numbers.size() % 2 != 0) {
-		unpaired = numbers.back();
-		numbers.pop_back();
+		unpaired   = numbers.back();
+		odd_length = true;
 #if PRINTDEF
 		std::cout << "Unpaired: " << unpaired << std::endl;
 #endif
 	}
 	// group into size / 2 pairs
-	for (size_t i = 0; i < numbers.size(); i += 2) {
+	for (size_t i = 0;
+		 i < (numbers.size() % 2 == 0 ? numbers.size() : numbers.size() - 1); i += 2) {
 		pairs.push_back(std::make_pair(numbers[i], numbers[i + 1]));
 	}
 	printContainerPairs(pairs, "");
@@ -151,11 +151,7 @@ void PmergeMe::collectPairs(PairsContainer& pairs, Container& main, Container& p
 }
 
 template <typename Container>
-void PmergeMe::assertMainSorted(Container& input, int unpaired, size_t size,
-								Container& main_chain) {
-	if (size % 2 != 0) {
-		input.push_back(unpaired);
-	}
+void PmergeMe::assertMainSorted(Container& input, Container& main_chain) {
 	Container sorted_chain(input);
 	std::sort(sorted_chain.begin(), sorted_chain.end());
 	if (main_chain != sorted_chain) {
@@ -178,8 +174,7 @@ void PmergeMe::assertMainSorted(Container& input, int unpaired, size_t size,
 }
 
 template <typename Container>
-void PmergeMe::insertionSort(Container& main, Container& pend, Container& jthal,
-							 const size_t size) {
+void PmergeMe::insertionSort(Container& main, Container& pend, Container& jthal) {
 	set_jacobsthal(pend.size(), jthal);
 	typename Container::iterator upper;
 	for (size_t i = 1; !pend.empty(); i++) {
@@ -191,7 +186,7 @@ void PmergeMe::insertionSort(Container& main, Container& pend, Container& jthal,
 		printContainerName(pend, "pend");
 	}
 	// handle unpaired
-	if (size % 2 != 0) {
+	if (odd_length) {
 		upper = std::upper_bound(main.begin(), main.end(), unpaired);
 		main.insert(upper, unpaired);
 	}
