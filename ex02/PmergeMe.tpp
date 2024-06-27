@@ -5,7 +5,7 @@
 #include <iostream>
 #include <iterator>
 
-#define PRINTDEF 1
+#define PRINTDEF 0
 
 template <typename Container> void PmergeMe::printContainer(Container& c) {
 #if PRINTDEF

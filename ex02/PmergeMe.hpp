@@ -60,6 +60,7 @@ private:
 	/* --------------------------------- METHODS ---------------------------------- */
 
 	void compare_sorted();
+	void PrintSummary(std::vector<int>& vec);
 
 	/* -------------------------------- Templates ------------------------------- */
 
@@ -91,4 +92,5 @@ private:
 
 	template <typename Container>
 	void assertMainSorted(Container& input, Container& main_chain);
+
 };

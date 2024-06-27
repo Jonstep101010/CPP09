@@ -21,6 +21,10 @@ PmergeMe::PmergeMe(char** argv)
 	if (!argv) {
 		throw Error();
 	}
+	std::cout << "Before: ";
+	for (int i = 1; argv[i]; i++) {
+		std::cout << argv[i] << " ";
+	}
 }
 
 /*
@@ -69,53 +73,49 @@ void PmergeMe::compare_sorted() {
 	system("diff -s outdeq.txt outvec.txt") ? ERROR("Error\n") : OK("[OK]\n");
 }
 
-static void print_before_after(std::vector<int>& vec, std::string str) {
-	std::cout << str << ": ";
+// @audit-info could be a template function
+void PmergeMe::PrintSummary(std::vector<int>& vec) {
+	std::cout << "After: ";
 	std::copy(vec.begin(), vec.end(), std::ostream_iterator<int>(std::cout, " "));
-	std::cout << std::endl;
+	std::cout << "\nTime to process a range of " << numbers_vec.size()
+			  << " elements with std::vector : " << timeElapsedVec
+			  << "\nTime to process a range of " << numbers_deq.size()
+			  << " elements with std::deque : " << timeElapsedDeq << std::endl;
 }
 
+// clang-format off
 void PmergeMe::sort() {
-	// clang-format off
-	// start timer 1
+	/* --------------------------------- VECTOR --------------------------------- */
 	start = clock();
 	get_input(numbers_vec);
-	// Print before
-	print_before_after(numbers_vec, "Before");
+
 	createPairs(numbers_vec, pairs_vec);
 	unsortEachPair(pairs_vec);
 	sortPairsByFirst(pairs_vec);
 	collectPairs<std::vector<int> >(pairs_vec, main_vec, pend_vec);
 
-	// Sort 1
 	insertionSort<std::vector<int> >(main_vec, pend_vec, jthal_vec);
-	assertMainSorted<std::vector<int> >(numbers_vec, main_vec);
-	// end timer 1
 	timeElapsedVec = ((double)(clock() - start) / (CLOCKS_PER_SEC));
+	// assertMainSorted<std::vector<int> >(numbers_vec, main_vec); // check if main_vec is sorted
 
-	// start timer 2
+	/* --------------------------------- DEQUE --------------------------------- */
 	start = clock();
 	get_input(numbers_deq);
+
 	createPairs(numbers_deq, pairs_deq);
 	unsortEachPair(pairs_deq);
 	sortPairsByFirst(pairs_deq);
+
 	collectPairs<std::deque<int> >(pairs_deq, main_deq, pend_deq);
-	// Sort 2
 	insertionSort<std::deque<int> >(main_deq, pend_deq, jthal_deq);
-	assertMainSorted<std::deque<int> >(numbers_deq, main_deq);
-	// clang-format on
-	// end timer 2
 	timeElapsedDeq = ((double)(clock() - start) / (CLOCKS_PER_SEC));
-	// Print after
-	print_before_after(main_vec, "After");
-	// Print time 1
-	std::cout << "Time to process a range of " << numbers_vec.size()
-			  << " elements with std::vector : " << timeElapsedVec << std::endl;
-	// Print time 2
-	std::cout << "Time to process a range of " << numbers_deq.size()
-			  << " elements with std::deque : " << timeElapsedDeq << std::endl;
-	// compare_sorted();
+	// assertMainSorted<std::deque<int> >(numbers_deq, main_deq); // check if main_deq is sorted
+
+	/* -------------------------------------------------------------------------- */
+	// compare_sorted(); // diff outdeq.txt outvec.txt
+	PrintSummary(main_vec);
 }
+// clang-format on
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
