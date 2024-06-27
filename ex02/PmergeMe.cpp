@@ -17,7 +17,11 @@ PmergeMe::PmergeMe(const PmergeMe& src)
 }
 
 PmergeMe::PmergeMe(char** argv)
-	: argv(argv), unpaired(NULL), start(), timeElapsedVec(0), timeElapsedDeq(0) {}
+	: argv(argv), unpaired(NULL), start(), timeElapsedVec(0), timeElapsedDeq(0) {
+	if (!argv) {
+		throw Error();
+	}
+}
 
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
@@ -110,7 +114,7 @@ void PmergeMe::sort() {
 	// Print time 2
 	std::cout << "Time to process a range of " << numbers_deq.size()
 			  << " elements with std::deque : " << timeElapsedDeq << std::endl;
-	compare_sorted(); // @audit remove
+	// compare_sorted();
 }
 
 /*

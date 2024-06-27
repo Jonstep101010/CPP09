@@ -11,7 +11,6 @@
 class PmergeMe {
 
 public:
-	PmergeMe();
 	PmergeMe(PmergeMe const& src);
 	PmergeMe(char** argv);
 	~PmergeMe();
@@ -21,12 +20,14 @@ public:
 	void sort();
 
 	class Error : public std::exception {
+	public:
 		virtual const char* what() const throw() { return "Error"; }
 	};
-	char** argv;
 
 private:
-	int* unpaired;
+	PmergeMe();
+	char** argv;
+	int*   unpaired;
 
 	clock_t start;
 

@@ -5,9 +5,14 @@ int main(int argc, char** argv) {
 	if (argc > 2) {
 		// validate input
 		// sort using merge-insertion sort (Ford-Johnson algorithm)
-		PmergeMe numbers(argv);
-		numbers.sort();
-		return 0;
+		try {
+			PmergeMe input(argv);
+			input.sort();
+			return 0;
+		} catch (PmergeMe::Error& e) {
+			std::cerr << e.what() << std::endl;
+			return 1;
+		}
 	}
 	std::cerr << "usage:\n./PmergeMe <list of positive numbers>\n";
 	return 1;
