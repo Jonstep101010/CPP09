@@ -153,7 +153,7 @@ void PmergeMe::insertionSort(Container& main, Container& pend, Container& jthal,
 							 const size_t size) {
 	set_jacobsthal(pend.size(), jthal);
 	typename Container::iterator upper;
-	for (size_t i = 0; !pend.empty(); i++) {
+	for (size_t i = 1; !pend.empty(); i++) {
 		const int& val = (i < jthal.size() - 1 ? pend[jthal[i]] : pend[0]);
 		upper          = std::upper_bound(main.begin(), main.end(), val);
 		main.insert(upper, val);
