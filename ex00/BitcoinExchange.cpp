@@ -35,6 +35,10 @@ BitcoinExchange& BitcoinExchange::operator=(BitcoinExchange const& rhs) {
 ** --------------------------------- METHODS ----------------------------------
 */
 
+bool isLeapYear(int year) {
+	return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+}
+
 static bool check_date(std::string const& line) {
 	static const int DDELIM_ONE = 4, DDELIM_TWO = 7;
 	if (line[DDELIM_ONE] != '-' || line[DDELIM_TWO] != '-') {
@@ -57,8 +61,7 @@ static bool check_date(std::string const& line) {
 	if (day_idx < 1 || day_idx > MONTHS_LENGTH[month_idx - 1]) {
 		throw BitcoinExchange::InvalidDateDays();
 	}
-	if (month_idx == 2 && day_idx == MONTHS_LENGTH[month_idx]
-		&& std::atoi(year.c_str()) % 4 != 0) {
+	if (month_idx == 2 && day_idx == 29 && !isLeapYear(std::atoi(year.c_str()))) {
 		throw BitcoinExchange::InvalidDateDays();
 	}
 	return true;
