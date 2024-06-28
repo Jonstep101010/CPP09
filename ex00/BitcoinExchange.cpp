@@ -141,16 +141,14 @@ void BitcoinExchange::create_db() {
 static int get_after_dot(double input) {
 	std::stringstream ss;
 	ss << input;
-	std::string input_str = ss.str();
-	int         counter   = 0;
-	if (input_str.find('.') != std::string::npos) {
-		for (int i = input_str.length() - 1; input_str[i] != '.' && input_str[i] == '0';
-			 i--) {
-			counter++;
-		}
-		counter = input_str.length() - input_str.find('.') - counter - 1;
-	}
-	return counter;
+	std::string input_str   = ss.str();
+	size_t      decimal_pos = input_str.find('.');
+
+	return decimal_pos == std::string::npos
+			 ? 0
+			 : input_str.erase(input_str.find_last_not_of('0') + 1, std::string::npos)
+					   .length()
+				   - decimal_pos - 1;
 }
 
 static void printExchangeRate(double db_rate, double input_rate) {
