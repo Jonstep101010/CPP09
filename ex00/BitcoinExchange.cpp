@@ -1,7 +1,9 @@
 #include "BitcoinExchange.hpp"
 #include <cstdlib>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 /*
@@ -136,6 +138,29 @@ void BitcoinExchange::create_db() {
 	dbfile.close();
 }
 
+static int get_after_dot(double input) {
+	std::stringstream ss;
+	ss << input;
+	std::string input_str = ss.str();
+	int         counter   = 0;
+	if (input_str.find('.') != std::string::npos) {
+		for (int i = input_str.length() - 1; input_str[i] != '.' && input_str[i] == '0';
+			 i--) {
+			counter++;
+		}
+		counter = input_str.length() - input_str.find('.') - counter - 1;
+	}
+	return counter;
+}
+
+static void printExchangeRate(double db_rate, double input_rate) {
+	double exchange_rate = db_rate * input_rate;
+
+	std::cout << std::fixed << std::setprecision(get_after_dot(input_rate)) << input_rate
+			  << " = " << std::fixed << std::setprecision(get_after_dot(exchange_rate))
+			  << exchange_rate << std::endl;
+}
+
 /**
  * @brief find date in _db (lower date if not found)
  * 
@@ -148,13 +173,9 @@ void BitcoinExchange::runExchange(std::pair<std::string, double> date_value) {
 			// walk back to find the closest date
 			for (; it->first > date_value.first && it != _db.begin(); --it) {
 			}
-			// std::cout << "date_value.first: '" << date_value.first
-			// 		  << "' db_date: '" << it->first << "'" << std::endl;
-			// in place calculate value * exchange_rate
-			double exchange_rate = it->second * date_value.second;
 			// print in format "date => value = exchange_rate"
-			std::cout << date_value.first << " => " << date_value.second << " = "
-					  << exchange_rate << std::endl;
+			std::cout << date_value.first << " => ";
+			printExchangeRate(it->second, date_value.second);
 			break;
 		}
 	}
