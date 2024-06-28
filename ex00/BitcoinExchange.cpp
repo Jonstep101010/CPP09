@@ -142,8 +142,8 @@ void BitcoinExchange::create_db() {
  * @param date_value key value pair
  */
 void BitcoinExchange::runExchange(std::pair<std::string, double> date_value) {
-	for (std::map<std::string, double>::iterator it = _db.begin(); it != _db.end();
-		 ++it) {
+	std::map<std::string, double>::iterator it = _db.begin();
+	for (; it != _db.end(); ++it) {
 		if (it->first >= date_value.first) {
 			// walk back to find the closest date
 			for (; it->first > date_value.first && it != _db.begin(); --it) {
@@ -157,6 +157,12 @@ void BitcoinExchange::runExchange(std::pair<std::string, double> date_value) {
 					  << exchange_rate << std::endl;
 			break;
 		}
+	}
+	if (it == _db.end()) {
+		it--;
+		double exchange_rate = it->second * date_value.second;
+		std::cout << date_value.first << " => " << date_value.second << " = "
+				  << exchange_rate << std::endl;
 	}
 }
 
